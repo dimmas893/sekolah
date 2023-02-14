@@ -1,0 +1,18 @@
+.container {
+  margin-top: 50px;
+}
+
+.result {
+  margin-top: 50px;
+  display: none;
+}
+
+.title {
+  background-color: #e7fdf5;
+  padding: 15px;
+  color: #2aa97e;
+}
+
+h4 {
+  color: #2aa97e;
+}
