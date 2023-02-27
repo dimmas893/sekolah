@@ -5,17 +5,19 @@
             <div class="section-header">
                 <h1>Jadwal jenjang tk</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Semua kelas</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manageJadwal') }}">Semua kelas</a></div>
                     <div class="breadcrumb-item">Jadwal jenjang tk</div>
                 </div>
             </div>
             <div class="section-body">
                 <div class="">
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <form action="{{ route('pilihkelas') }}" method="get">
                                 @csrf
-                                <div class="isMember my-2">
+                                <div class="isMember mb-2">
                                     <label for="name">Kelas</label>
                                     <select name="kelas_id" id="package" class="form-control">
                                         <option value="" selected disabled>--- Pilih Kelas ---</option>
@@ -39,7 +41,7 @@
                                 <div class="">
                                     <div class="" id="sma">
                                         <div id="TU_all">
-                                            <h1 class="text-secondary my-5 text-center">
+                                            <h1 class="text-secondary text-center">
                                                 <div class="load-3">
                                                     <div class="line"></div>
                                                     <div class="line"></div>

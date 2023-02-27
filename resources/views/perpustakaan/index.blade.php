@@ -93,7 +93,7 @@
         {{-- edit employee modal start --}}
         <div class="modal fade" id="editTUModal" tabindex="-1" aria-labelledby="exampleModalLabel"
             data-backdrop="static" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Edit</h5>
@@ -186,6 +186,12 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Data perpustakaan</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a>
+                    </div>
+                    <div class="breadcrumb-item">Tabel perpustakaan</div>
+                </div>
             </div>
 
 

@@ -6,14 +6,18 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Data Siswa Didik</h1>
+                <h1>Siswa Didik</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item">Siswa didik</div>
+                </div>
             </div>
             <div class="section-body">
                 <div class="row my-5">
                     <div class="col-lg-12">
                         <div class="card shadow">
                             <div class="card-header bg-primary d-flex justify-content-between align-items-center">
-                                <h3 class="text-light">Tabel Siswa Didik</h3>
+                                <h3 class="text-light">Siswa Didik</h3>
                                 <form action="{{ route('NaikKelas') }}" method="post">
                                     <input type="hidden" name="id" value="{{ Auth::user()->id }}">
                                     @csrf

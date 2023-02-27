@@ -5,6 +5,14 @@
         <section class="section">
             <div class="section-header">
                 <h1> Laporan Absensi</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('infosiswa') }}">Informasi siswa</a>
+                    </div>
+                    <div class="breadcrumb-item active"><a href="{{ route('laporan_absen_admin_view') }}">Pencarian
+                            kelas</a></div>
+                    <div class="breadcrumb-item">Laporan Absen</div>
+                </div>
             </div>
             <div class="mb-3">
                 <form method="get" action="{{ route('filter_absensi_siswa') }}">
@@ -38,7 +46,7 @@
 
                             @php
                                 $dataSiswa = \App\Models\Jadwal::where('id', $ja->jadwal_id)->first();
-
+                                
                             @endphp
 
                             @foreach ($dataSiswa->kelasget->rincianSiswa as $item)

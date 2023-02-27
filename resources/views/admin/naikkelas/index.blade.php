@@ -7,8 +7,9 @@
                 <div class="section-header-breadcrumb">
                     {{-- <div class="breadcrumb-item active"><a href="{{ route('jadwal') }}">Table Jadwal
                         </a></div> --}}
-                    {{-- <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Pilih Jenjang</a></div>
-                    <div class="breadcrumb-item">Data Kelas</div> --}}
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    {{-- <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div> --}}
+                    <div class="breadcrumb-item">Semua kelas</div>
                 </div>
             </div>
             <div class="section-body">
@@ -49,7 +50,10 @@
                                         <div
                                             class="card-header d-flex justify-content-between bg-secondary align-items-center">
                                             SD
-                                            <a href="{{ route('sd') }}" class="badge badge-primary">Jadwal</a>
+                                            <div>
+                                                <a href="{{ route('sd') }}" class="badge badge-primary">Jadwal</a>
+                                                <a href="{{ route('nilaisd') }}" class="badge badge-success">Nilai</a>
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
@@ -72,8 +76,11 @@
                                         <div
                                             class="card-header d-flex justify-content-between bg-secondary align-items-center">
                                             SMP
+                                            <div>
 
-                                            <a href="{{ route('smp') }}" class="badge badge-primary">Jadwal</a>
+                                                <a href="{{ route('smp') }}" class="badge badge-primary">Jadwal</a>
+                                                <a href="{{ route('nilaismp') }}" class="badge badge-success">Nilai</a>
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
@@ -96,8 +103,10 @@
                                         <div
                                             class="card-header d-flex justify-content-between bg-secondary align-items-center">
                                             SMA
-
-                                            <a href="{{ route('sma') }}" class="badge badge-primary">Jadwal</a>
+                                            <div>
+                                                <a href="{{ route('sma') }}" class="badge badge-primary">Jadwal</a>
+                                                <a href="{{ route('nilaisma') }}" class="badge badge-success">Nilai</a>
+                                            </div>
                                         </div>
                                         <div class="card-body">
                                             <div class="row">

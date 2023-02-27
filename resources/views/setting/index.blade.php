@@ -55,7 +55,7 @@
                         <div class="modal-body">
                             <div class="my-2">
                                 <label for="name">Tahun Ajaran</label>
-                                <select name="id_tahun_ajaran" class="form-control">
+                                <select name="id_tahun_ajaran" id="id_tahun_ajaran" class="form-control">
                                     @foreach ($tahun_ajaran as $p)
                                         <option value="{{ $p->id }}">{{ $p->tahun_ajaran }}</option>
                                     @endforeach

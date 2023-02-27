@@ -1,9 +1,39 @@
+<div class="d-none d-xl-block d-lg-block d-md-block">
+    <style>
+        .navbar-bg-web {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 74px;
+            background-color: #6777ef;
+            z-index: -1;
+        }
+    </style>
+    <div class="navbar-bg-web"></div>
+</div>
+<div class="d-sm-none">
+    <style>
+        .navbar-bg {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 115px;
+            background-color: #6777ef;
+            z-index: -1;
+        }
+    </style>
+    <div class="navbar-bg"></div>
+</div>
 <nav class="navbar navbar-expand-lg main-navbar">
     <form class="form-inline mr-auto" style="">
         <ul class="navbar-nav mr-3">
-            <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
+            {{-- <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg d-sm-none"><i class="fas fa-bars"></i></a></li>
             <li><a href="#" data-toggle="search" class="nav-link nav-link-lg d-sm-none"><i
-                        class="fas fa-search"></i></a></li>
+                        class="fas fa-search"></i></a></li> --}}
         </ul>
     </form>
     @if (Auth::user())
@@ -37,7 +67,7 @@
                     @endif
 
                     @if (Auth::user()->role == 1)
-                        @if ($admin->avatar)
+                        @if ($admin->avatar != null)
                             <img alt="image" src="{{ asset('avatar/' . $admin->avatar) }}"
                                 class="rounded-circle mr-1">
                         @elseif(asset('guru/' . $admin->avatar) == false)
@@ -53,13 +83,6 @@
                     <a href="{{ route('profil') }}" class="dropdown-item has-icon">
                         <i class="far fa-user"></i> Profil
                     </a>
-                    {{-- <a href="features-settings.html" class="dropdown-item has-icon">
-                        <i class="fas fa-cog"></i> Settings
-                    </a> --}}
-                    <div class="dropdown-divider"></div>
-                    {{-- <a href="#" class="dropdown-item has-icon text-danger">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </a> --}}
                     <a class="dropdown-item has-icon text-danger" href="{{ route('logout') }}"
                         onclick="event.preventDefault();
                                     document.getElementById('logout_id').submit();">

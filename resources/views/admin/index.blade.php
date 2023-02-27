@@ -16,7 +16,7 @@
                         <div class="modal-body">
                             <div class="my-2">
                                 <label for="nomor_induk_pegawai">Nomor Induk Pegawai</label>
-                                <input type="text" name="nomor_induk_pegawai" class="form-control"
+                                <input type="number" name="nomor_induk_pegawai" class="form-control"
                                     placeholder="Masukan Nomor Induk Pegawai" required>
                             </div>
                             <div class="my-2">
@@ -63,7 +63,7 @@
                         <div class="modal-body">
                             <div class="my-2">
                                 <label for="nomor_induk_pegawai">Nomor Induk Pegawai</label>
-                                <input type="text" id="nomor_induk_pegawai" name="nomor_induk_pegawai"
+                                <input type="number" id="nomor_induk_pegawai" name="nomor_induk_pegawai"
                                     class="form-control" placeholder="Masukan Nomor Induk Pegawai" required>
                             </div>
                             <div class="my-2">
@@ -81,7 +81,10 @@
                             <div class="my-2">
                                 <label for="password">Password</label>
                                 <input type="password" id="password" name="password" class="form-control"
-                                    placeholder="Masukan Password" required>
+                                    placeholder="Masukan Password">
+                                <div>
+                                    <p style="color:red">*Jangan isi jika tidak ingin mengganti</p>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -97,11 +100,17 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Admin</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a>
+                    </div>
+                    <div class="breadcrumb-item">Admin</div>
+                </div>
             </div>
 
 
             <div class="section-body">
-                <form action="{{ route('admin-excel') }}" method="post" enctype="multipart/form-data">
+                {{-- <form action="{{ route('admin-excel') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-8 col-8">
@@ -111,7 +120,7 @@
                             <input type="submit" class="btn btn-success" value="Import">
                         </div>
                     </div>
-                </form>
+                </form> --}}
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card shadow">

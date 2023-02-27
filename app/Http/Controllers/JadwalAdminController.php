@@ -17,7 +17,8 @@ class JadwalAdminController extends Controller
     public function index(Request $request)
     {
         // $request->kelas_id;
-        $kelas = Kelas::where('id', $request->kelas_id)->first();
+        $kelas = Kelas::with('kelas')->where('id', $request->kelas_id)->first();
+
         $guru = Guru::all();
         $mata_pelajaran = Mata_Pelajaran::all();
         $hari = Hari::all();
@@ -76,6 +77,7 @@ class JadwalAdminController extends Controller
         if ($jadwal == null) {
             $empData = [
                 'kelas_id' => $request->kelas_id,
+                'jenjang_pendidikan_id' => $request->jenjang_pendidikan_id,
                 'tingkatan_id' => $request->tingkatan_id,
                 'ruangan_id' => $request->ruangan_id,
                 'guru_id' => $request->guru_id,

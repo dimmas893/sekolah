@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Guru;
 use App\Models\Guru_Kelas;
+use App\Models\JenjangPendidikan;
 use App\Models\Kelas;
 use App\Models\Master_Kelas;
 use App\Models\Mata_Pelajaran;
+use App\Models\Setting;
 use App\Models\Tahun_ajaran;
 use Illuminate\Http\Request;
 
@@ -18,7 +20,30 @@ class Guru_KelasController extends Controller
         $guru = Guru::all();
         $tahun_ajaran = Tahun_ajaran::all();
         $kelas = Master_Kelas::all();
-        return view('guru_kelas.index', compact('guru', 'tahun_ajaran', 'kelas'));
+        $jenjang_pendidikan = JenjangPendidikan::all();
+        return view('guru_kelas.index', compact('guru', 'tahun_ajaran', 'kelas', 'jenjang_pendidikan'));
+    }
+
+    public function ajax(Request $request)
+    {
+        $setting = Setting::first();
+        $id = $request->id;
+        $emps = Master_Kelas::where('jenjang_pendidikan_id', $id)->get();
+
+        $output = '';
+        if ($emps->count() > 0) {
+            $output .= '<label>Kelas</label>
+            <select name="id_master_kelas" class="form-control">
+						<option value="" selected disabled>---Pilih Kelas---</option>
+			';
+            foreach ($emps as $emp) {
+                $output .= '<option value="' . $emp->id . '" >' . $emp->name . '</option>';
+            }
+            $output .= '</select>';
+            echo $output;
+        } else {
+            echo '<h1 class="text-center text-secondary my-5">Kelas Sudah terisi!</h1>';
+        }
     }
 
     public function all()
@@ -34,7 +59,9 @@ class Guru_KelasController extends Controller
                 <th>No</th>
                 <th>Name</th>
                 <th>Jenjang</th>
+                <th>Wali Kelas</th>
                 <th>Tahun Ajaran</th>
+                <th>Detail Kelas</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -44,19 +71,13 @@ class Guru_KelasController extends Controller
                 <td>' . $p++ . '</td>
                 <td>' . $emp->kelas->name . '</td>
                 <td>' . $emp->kelas->jenjang->nama . '</td>
+                <td>' . $emp->guru->name . '</td>
                 <td>' . $emp->tahun_ajaran->tahun_ajaran . '</td>
+                <td><a href="/kelas/detail/' . $emp->id . '" class="text-info mx-1"><i class="ion-eye h4"></i></a></td>
 				<td>
-					<div class="btn-group dropleft">
-						<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false">
-							Action
-						</button>
-						<div class="dropdown-menu dropleft">
-							<a href="/kelas/detail/' . $emp->id . '" class="text-info mx-1"><i class="ion-eye h4"></i></a>
+
 							<a href="#" id="' . $emp->id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
 							<a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-						</div>
-					</div>
 				</td>
               </tr>';
             }
@@ -69,11 +90,13 @@ class Guru_KelasController extends Controller
 
     public function store(Request $request)
     {
-        $tingkat = Master_Kelas::where('id', $request->id_master_kelas)->first();
-        // dd($tingkat);
+        // $tingkat = Kelas::where('id', $request->id_master_kelas)->first();
+        $idmasterkelas = (int)$request->id_master_kelas;
+        $masterkelas = Master_Kelas::where('id', $idmasterkelas)->first();
+        // dd($request->all());
         $empData = [
             'id_guru' => $request->id_guru,
-            'tingkatan_id' => $tingkat->tingkatan_id,
+            'tingkatan_id' => $masterkelas->tingkatan_id,
             'id_tahun_ajaran' => $request->id_tahun_ajaran,
             'id_master_kelas' => $request->id_master_kelas,
         ];
@@ -99,9 +122,7 @@ class Guru_KelasController extends Controller
         $tingkat = Master_Kelas::where('id', $request->id_master_kelas)->first();
         $empData = [
             'id_guru' => $request->id_guru,
-            'tingkatan_id' => $tingkat->tingkatan_id,
             'id_tahun_ajaran' => $request->id_tahun_ajaran,
-            'id_master_kelas' => $request->id_master_kelas,
         ];
         $emp->update($empData);
         return response()->json([

@@ -117,14 +117,14 @@
             <div class="section-header">
                 <h1>Halaman Data Soal <b>{{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}</b></h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Dashboard</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
                     <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar Jadwal</a>
                     </div>
                     <div class="breadcrumb-item active"><a href="{{ route('jadwal-semua-siswa', $jadwal_id) }}">Kelas</a>
                     </div>
                     <div class="breadcrumb-item active"><a href="{{ route('tabelujian', $jadwal_id) }}">Ujian</a>
                     </div>
-                    <div class="breadcrumb-item">Tabel Soal
+                    <div class="breadcrumb-item">Soal
                         <b>{{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}
                     </div>
                 </div>
@@ -136,7 +136,7 @@
                             <div class="card-header bg-primary d-flex justify-content-between align-items-center">
                                 <h3 class="text-light">Tabel Soal</h3>
                                 <button class="btn btn-light" data-toggle="modal" data-target="#halo"><i
-                                        class="bi-plus-circle me-2"></i>Tambah Soal</button>
+                                        class="bi-plus-circle me-2"></i>Tentukan jumlah soal</button>
                             </div>
                             <div>
                                 <div class="card-body" id="TU_all">

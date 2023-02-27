@@ -27,7 +27,7 @@
                                 <label for="">Mata Pelajaran</label>
                                 <select name="mata_pelajaran_id" class="form-control">
                                     <option value="" selected disabled>--Pilih Mata Pelajaran--</option>
-                                    @foreach ($tingkatan as $item)
+                                    @foreach ($mata_pelajaran as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
@@ -85,7 +85,7 @@
                                 <label for="">Mata Pelajaran</label>
                                 <select name="mata_pelajaran_id" id="mata_pelajaran_id" class="form-control">
                                     <option value="" selected disabled>--Pilih Mata Pelajaran--</option>
-                                    @foreach ($tingkatan as $item)
+                                    @foreach ($mata_pelajaran as $item)
                                         <option value="{{ $item->id }}">{{ $item->name }}</option>
                                     @endforeach
                                 </select>
@@ -119,6 +119,12 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Data Kurikulum</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a>
+                    </div>
+                    <div class="breadcrumb-item">Tabel kurikulum</div>
+                </div>
             </div>
 
 

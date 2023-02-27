@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\JadwalImport;
 use App\Models\Absen;
 use App\Models\Guru;
 use App\Models\Hari;
@@ -19,9 +20,17 @@ use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Excel;
 
 class jadwalController extends Controller
 {
+    public function jadwalilport(Request $request)
+    {
+        $user = Excel::import(new JadwalImport, $request->file);
+        return back();
+    }
+
+
     public function jadwal_buat_guru()
     {
         $user = User::where('id', Auth::user()->id)->first();
@@ -289,13 +298,14 @@ class jadwalController extends Controller
 
     public function jadwal_semua_siswa($id)
     {
+
         $jadwal = Jadwal::where('id', $id)->first();
         $rincian_siswa = Siswa::where('kelas', $jadwal->kelas_id)->get();
         $count = Siswa::where('kelas', $jadwal->kelas_id)->count();
 
         $setting = Setting::first();
-        $cekabsen = Absen::where('jadwal_id', $jadwal->id)->where('tanggal', Carbon::now()->Format('Y-m-d'))->count();
-        $cekabsen_get = Absen::where('jadwal_id', $jadwal->id)->where('tanggal', Carbon::now()->Format('Y-m-d'))->get();
+        $cekabsen = Absen::where('jadwal_id', $jadwal->id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('tanggal', Carbon::now()->Format('Y-m-d'))->count();
+        $cekabsen_get = Absen::where('jadwal_id', $jadwal->id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('tanggal', Carbon::now()->Format('Y-m-d'))->get();
 
         $tampung_absen = [];
         $laporan = [];
@@ -308,15 +318,15 @@ class jadwalController extends Controller
         if ($rincian_siswa) {
             foreach ($tampung_absen as $pe) {
                 if ($pe) {
-                    $hadir = $pe->where('siswa_id', $pe->siswa_id)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '0')->count();
-                    $sakit = $pe->where('siswa_id', $pe->siswa_id)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '1')->count();
-                    $izin = $pe->where('siswa_id', $pe->siswa_id)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '2')->count();
-                    $alpha = $pe->where('siswa_id', $pe->siswa_id)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '3')->count();
-                    $terlambat = $pe->where('siswa_id', $pe->siswa_id)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '4')->count();
+                    $hadir = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '0')->count();
+                    $sakit = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '1')->count();
+                    $izin = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '2')->count();
+                    $alpha = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '3')->count();
+                    $terlambat = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '4')->count();
                     // $nama_siswa = Rincian_Siswa::with('siswa')->where('jadwal_id', $pe->jadwal_id)->first();
                     $row['siswa'] = $pe['siswa']['nama_siswa'];
                     $row['jadwal'] = $pe['jadwal']['kelasget']['kelas']['name'] . ' / ' . $pe['jadwal']['ruangan']['name'] . ' / ' . $pe['jadwal']['mata_pelajaran']['name'];
-                    $row['pertemuan'] = $pe['pertemuan'];
+                    $row['pertemuan'] = $hadir + $sakit + $izin + $alpha + $terlambat;
                     $row['hadir'] = $hadir;
                     $row['sakit'] = $sakit;
                     $row['izin'] = $izin;

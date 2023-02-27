@@ -4,7 +4,7 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Profile siswa</h1>
-                <div class="section-header-breadcrumb">
+                {{-- <div class="section-header-breadcrumb">
                     @if (Auth::user()->role != 5 && Auth::user()->role != 3)
                         <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Dashboard</a></div>
                     @else
@@ -12,7 +12,20 @@
                                 href="{{ route('siswa_tagihan-daftar', $simpan_id_tagihan) }}">Kembali</a></div>
                     @endif
                     <div class="breadcrumb-item">Halaman Profile siswa</div>
-                </div>
+                </div> --}}
+
+                @if (Auth::user()->role === 1)
+                    <div class="section-header-breadcrumb">
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('infosiswa') }}">Informasi Siswa</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('viewTagihanmenu') }}">Tagihan</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('siswa_tagihan') }}">Tagihan siswa</a></div>
+                        <div class="breadcrumb-item active"><a
+                                href="{{ route('siswa_tagihan-daftar', $simpan_id_tagihan) }}">Tagihan
+                                siswa</a></div>
+                        <div class="breadcrumb-item">Detail siswa</div>
+                    </div>
+                @endif
             </div>
             @csrf
             <div class="">

@@ -4,6 +4,11 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Data Pendaftaran Siswa Belum Di Tinjau</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('penerimaansiswa') }}">Semua jenjang</a></div>
+                    <div class="breadcrumb-item">Pendaftaran calon siswa</div>
+                </div>
             </div>
 
             <div class="section-body">
@@ -77,7 +82,7 @@
 
             function TU_all() {
                 $.ajax({
-                    url: '{{ route('pendaftaran-all') }}',
+                    url: '{{ route('pendaftaran-all', $jenjang) }}',
                     method: 'get',
                     success: function(response) {
                         $("#TU_all").html(response);

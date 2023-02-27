@@ -92,6 +92,12 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Data pengaturan</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a>
+                    </div>
+                    <div class="breadcrumb-item">Pengaturan</div>
+                </div>
             </div>
             <div class="section-body">
                 <div class="row my-5">
@@ -99,8 +105,10 @@
                         <div class="card shadow">
                             <div class="card-header bg-primary d-flex justify-content-between align-items-center">
                                 <h3 class="text-light">Tabel pengaturan</h3>
+                                {{-- @if (\App\Models\Pengaturan::count() === 0) --}}
                                 <button class="btn btn-light" data-toggle="modal" data-target="#add_TU_modal"><i
                                         class="bi-plus-circle me-2"></i>Tambah pengaturan</button>
+                                {{-- @endif --}}
                             </div>
                             <div>
                                 <div class="card-body" id="TU_all">

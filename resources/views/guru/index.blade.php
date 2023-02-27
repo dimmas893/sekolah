@@ -121,11 +121,17 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Guru</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a>
+                    </div>
+                    <div class="breadcrumb-item">Tabel guru</div>
+                </div>
             </div>
 
 
             <div class="section-body">
-                <form action="{{ route('guru-excel') }}" method="post" enctype="multipart/form-data">
+                {{-- <form action="{{ route('guru-excel') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-8 col-8">
@@ -135,7 +141,7 @@
                             <input type="submit" class="btn btn-success" value="Import">
                         </div>
                     </div>
-                </form>
+                </form> --}}
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card shadow">

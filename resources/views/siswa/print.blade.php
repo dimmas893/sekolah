@@ -5,31 +5,20 @@
             <div class="main-content">
                 <section class="section">
                     <div class="text-center wow bounceIn" data-wow-duration="1s" data-wow-delay="0.2s">
-                        <h1>Calon Peserta Didik dengan nama <b>{{ $pendaftaran->nama_siswa }}</b> telah teregistrasi di
-                            Sekolah
-                            Al-Azhar
-                            BSD</h1>
+
+                        @if ($sudah === 'sudah')
+                            <h1><b>{{ $pendaftaran->nama_siswa }}</b> Anda Sudah Mendaftar </h1>
+                        @else
+                            <h1>Calon Peserta Didik dengan nama <b>{{ $pendaftaran->nama_siswa }}</b> telah teregistrasi di
+                                Sekolah
+                                Al-Azhar
+                                BSD</h1>
+                        @endif
                     </div>
 
                     <div class="mt-2 wow bounceIn" data-wow-duration="1s" data-wow-delay="0.2s">
                         <div class="card">
                             <div class="card-body">
-                                <div class="row mt-3">
-                                    <div class="col-4 text-right">
-                                        <label for="">User ID</label>
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control" value="{{ $pendaftaran->id }}" disabled>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-4 text-right">
-                                        <label for="">Password</label>
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="text" class="form-control" value="{{ $pendaftaran->id }}" disabled>
-                                    </div>
-                                </div>
                                 <div class="row mt-3">
                                     <div class="col-4 text-right">
                                         <label for="">Virtual Account</label>

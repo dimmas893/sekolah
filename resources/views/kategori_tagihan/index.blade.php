@@ -28,6 +28,21 @@
                                 <label for="deskripsi">Deskripsi</label>
                                 <textarea name="deskripsi" class="form-control" placeholder="Masukan Deskripsi Kategori Tagihan" required></textarea>
                             </div>
+                            <div class="my-2">
+                                <label for="batas_bayar">Batas Bayar</label>
+                                <input type="date" name="batas_bayar" class="form-control"
+                                    placeholder="Masukan Deskripsi Kategori Tagihan" required>
+                            </div>
+                            <div class="my-2">
+                                <label for="kategori_cicilan">Kategori Cicilan</label>
+                                <input type="number" name="kategori_cicilan" value="0" class="form-control"
+                                    placeholder="Masukan Deskripsi Kategori Tagihan" required>
+                            </div>
+                            <div class="my-2">
+                                <label for="minimum_bayar">Minimum Bayar</label>
+                                <input type="number" name="minimum_bayar" value="0" class="form-control"
+                                    placeholder="Masukan Deskripsi Kategori Tagihan" required>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -68,6 +83,21 @@
                                 <textarea name="deskripsi" id="deskripsi" class="form-control" placeholder="Masukan Deskripsi Kategori Tagihan"
                                     required></textarea>
                             </div>
+                            <div class="my-2">
+                                <label for="batas_bayar">Batas Bayar</label>
+                                <input type="date" name="batas_bayar" id="batas_bayar" class="form-control"
+                                    placeholder="Masukan Deskripsi Kategori Tagihan" required>
+                            </div>
+                            <div class="my-2">
+                                <label for="kategori_cicilan">Kategori Cicilan</label>
+                                <input type="number" name="kategori_cicilan" id="kategori_cicilan" class="form-control"
+                                    placeholder="Masukan Deskripsi Kategori Tagihan" required>
+                            </div>
+                            <div class="my-2">
+                                <label for="minimum_bayar">Minimum Bayar</label>
+                                <input type="number" name="minimum_bayar" id="minimum_bayar" class="form-control"
+                                    placeholder="Masukan Deskripsi Kategori Tagihan" required>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -82,6 +112,12 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Kategori Tagihan</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('infosiswa') }}">Informasi Siswa</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('viewTagihanmenu') }}">Tagihan</a></div>
+                    <div class="breadcrumb-item">Kategori tagihan</div>
+                </div>
             </div>
 
 
@@ -164,7 +200,9 @@
                     success: function(response) {
                         $("#nama_kategori").val(response.nama_kategori);
                         $("#nominal").val(response.nominal);
-                        // $("#password").val(response.password);
+                        $("#kategori_cicilan").val(response.kategori_cicilan);
+                        $("#batas_bayar").val(response.batas_bayar);
+                        $("#minimum_bayar").val(response.minimum_bayar);
                         $("#deskripsi").summernote('code', response.deskripsi);
                         $("#id").val(response.id);
                     }

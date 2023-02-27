@@ -5,8 +5,8 @@
             <div class="section-header">
                 <h1>Halaman Jadwals {{ Auth::user()->name }}</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Dashboard</a></div>
-                    <div class="breadcrumb-item">Daftar Jadwal</div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item">Jadwal</div>
                 </div>
             </div>
         </section>
@@ -17,13 +17,13 @@
                         <div class="card-header bg-secondary d-flex justify-content-between align-items-center">
                             <h4>{{ $pu->name }}</h4>
 
-                            <a href="" class="btn btn-primary">Nilai</a>
+                            {{-- <a href="" class="btn btn-primary">Nilai</a> --}}
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 @foreach ($jadwal->where('mata_pelajaran_id', $pu->id) as $kel)
                                     <div class="col-md-12 col-lg-12 col-xl-3 col-xxl-12 col-sm-12">
-                                        <div class="card">
+                                        <div class="card card-primary">
                                             <div class="card-header d-flex justify-content-between align-items-center">
                                                 <h4>{{ $kel->kelasget->kelas->name }} /
                                                     {{ $kel->ruangan->name }} -

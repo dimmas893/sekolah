@@ -7,7 +7,8 @@
                 <div class="section-header-breadcrumb">
                     {{-- <div class="breadcrumb-item active"><a href="{{ route('jadwal') }}">Table Jadwal
                         </a></div> --}}
-                    <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Data kelas</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Semua kelas</a></div>
                     <div class="breadcrumb-item">Kelas {{ $kelas->kelas->name }}</div>
                 </div>
             </div>

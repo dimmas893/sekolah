@@ -6,9 +6,13 @@
                 <h1>Halaman Edit siswa</h1>
                 <div class="section-header-breadcrumb">
                     @if ($siswa->id_user == Auth::user()->id)
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('profil') }}">Profil</a></div>
                         <div class="breadcrumb-item active"><a href="{{ route('profil') }}">Profil</a></div>
                         <div class="breadcrumb-item">Edit Profil Siswa</div>
                     @else
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('infosiswa') }}">Informasi siswa</a></div>
                         <div class="breadcrumb-item active"><a href="{{ route('siswa') }}">Tabel Siswa</a></div>
                         <div class="breadcrumb-item">Edit siswa</div>
                     @endif

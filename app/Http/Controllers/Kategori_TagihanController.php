@@ -20,15 +20,18 @@ class Kategori_TagihanController extends Controller
         // <td><img src="/storage/images/' . $emp->image . '" width="50" class="img-thumbnail rounded-circle"></td>
         $emps = Kategori_Tagihan::all();
         $output = '';
-        $p = 1 ;
+        $p = 1;
         if ($emps->count() > 0) {
             $output .= '<table class="table table-bordered table-md display nowrap" style="width:100%">
             <thead>
               <tr>
                 <th>No</th>
-                <th>NIK</th>
-                <th>Nama Admin</th>
-                <th>E-mail</th>
+                <th>Nama Kategori Tagihan</th>
+                <th>Nominal</th>
+                <th>Deskripsi</th>
+                <th>Batas Bayar</th>
+                <th>kategori Cicilan</th>
+                <th>Minimum Bayar</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -39,6 +42,9 @@ class Kategori_TagihanController extends Controller
                 <td>' . $emp->nama_kategori . '</td>
                 <td>' . $emp->nominal . '</td>
                 <td>' . $emp->deskripsi . '</td>
+                <td>' . $emp->batas_bayar . '</td>
+                <td>' . $emp->kategori_cicilan . '</td>
+                <td>' . $emp->minimum_bayar . '</td>
                 <td>
                   <a href="#" id="' . $emp->id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
                   <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
@@ -55,10 +61,13 @@ class Kategori_TagihanController extends Controller
     // handle insert a new Tu ajax request
     public function store(Request $request)
     {
-       $empData = [
+        $empData = [
             'nama_kategori' => $request->nama_kategori,
             'nominal' => $request->nominal,
-            'deskripsi' => $request->deskripsi
+            'deskripsi' => $request->deskripsi,
+            'batas_bayar' => $request->batas_bayar,
+            'kategori_cicilan' => $request->kategori_cicilan,
+            'minimum_bayar' => $request->minimum_bayar
         ];
 
         Kategori_Tagihan::create($empData);
@@ -91,10 +100,13 @@ class Kategori_TagihanController extends Controller
         //     $fileName = $request->emp_image;
         // }
 
-       $empData = [
+        $empData = [
             'nama_kategori' => $request->nama_kategori,
             'nominal' => $request->nominal,
-            'deskripsi' => $request->deskripsi
+            'deskripsi' => $request->deskripsi,
+            'batas_bayar' => $request->batas_bayar,
+            'kategori_cicilan' => $request->kategori_cicilan,
+            'minimum_bayar' => $request->minimum_bayar
         ];
 
         $emp->update($empData);
@@ -108,7 +120,6 @@ class Kategori_TagihanController extends Controller
     {
         $id = $request->id;
         // $emp = Kategori_Tagihan::find($id);
-            Kategori_Tagihan::destroy($id);
+        Kategori_Tagihan::destroy($id);
     }
 }
-

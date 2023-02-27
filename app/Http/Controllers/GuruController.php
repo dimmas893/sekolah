@@ -20,28 +20,28 @@ class GuruController extends Controller
         return view('guru.index');
     }
 
-	public function edit_profile(Request $request, $id)
-	{
-		// dd($request->all());
-		$emp = Guru::Find($id);
-		$lampiranFulltextFile = null;
-		if($request->hasFile('avatar')){
+    public function edit_profile(Request $request, $id)
+    {
+        // dd($request->all());
+        $emp = Guru::Find($id);
+        $lampiranFulltextFile = null;
+        if ($request->hasFile('avatar')) {
 
-			if ($emp->avatar) {
-				  File::delete(public_path('/guru/'.$emp->avatar));
+            if ($emp->avatar) {
+                File::delete(public_path('/guru/' . $emp->avatar));
             }
-			$file = $request->file('avatar');
-			$file_extension = $file->getClientOriginalExtension();
-			$lokasiFile = public_path().'/guru';
+            $file = $request->file('avatar');
+            $file_extension = $file->getClientOriginalExtension();
+            $lokasiFile = public_path() . '/guru';
 
-			$this->lampiranFulltextFile = 'foto-guru-'.$request->name.Str::random(5).'.'.$file_extension;
-			// $this->lampiranFulltextFile = $request->tahun_terbit.$request->singkatan_jenis.$kodeWilayah.$nomorPeraturan.'.'.$file_extension;
-			$request->file('avatar')->move($lokasiFile,$this->lampiranFulltextFile);
-			$lampiranFulltextFile = $this->lampiranFulltextFile;
-		} else {
-			$this->lampiranFulltextFile = $emp->avatar;
-			$lampiranFulltextFile = $this->lampiranFulltextFile;
-		}
+            $this->lampiranFulltextFile = 'foto-guru-' . $request->name . Str::random(5) . '.' . $file_extension;
+            // $this->lampiranFulltextFile = $request->tahun_terbit.$request->singkatan_jenis.$kodeWilayah.$nomorPeraturan.'.'.$file_extension;
+            $request->file('avatar')->move($lokasiFile, $this->lampiranFulltextFile);
+            $lampiranFulltextFile = $this->lampiranFulltextFile;
+        } else {
+            $this->lampiranFulltextFile = $emp->avatar;
+            $lampiranFulltextFile = $this->lampiranFulltextFile;
+        }
         $empData = [
             'name' => $request->name,
             'email' => $request->email,
@@ -53,16 +53,16 @@ class GuruController extends Controller
             'avatar' => $lampiranFulltextFile,
         ];
 
-		if($request->password){
-			$useree = [
-				'password' => Hash::make($request->password),
-			];
-			User::where('id', $emp->id_user)->update($useree);
-		}
+        if ($request->password) {
+            $useree = [
+                'password' => Hash::make($request->password),
+            ];
+            User::where('id', $emp->id_user)->update($useree);
+        }
 
         $emp->update($empData);
         return back();
-	}
+    }
 
     // handle fetch all eamployees ajax request
     public function all()
@@ -71,7 +71,7 @@ class GuruController extends Controller
         // <td><img src="/storage/avatars/' . $emp->avatar . '" width="50" class="img-thumbnail rounded-circle"></td>
         $emps = Guru::all();
         $output = '';
-        $p = 1 ;
+        $p = 1;
         if ($emps->count() > 0) {
             $output .= '<table class="table table-bordered table-md display nowrap" style="width:100%">
             <thead>
@@ -111,40 +111,38 @@ class GuruController extends Controller
     public function store(Request $request)
     {
 
-		$fotoFile = null;
-		if($request->hasFile('avatar')){
-			$file = $request->file('avatar');
-			$file_extension = $file->getClientOriginalExtension();
-			$lokasiFile = public_path().'/'.'guru';
-			$this->fotoFile = 'foto-guru-'.$request->name.Str::random(5).'.'.$file_extension;
-			$request->file('avatar')->move($lokasiFile,$this->fotoFile);
-			$fotoFile = $this->fotoFile;
-		}
+        $fotoFile = null;
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $file_extension = $file->getClientOriginalExtension();
+            $lokasiFile = public_path() . '/' . 'guru';
+            $this->fotoFile = 'foto-guru-' . $request->name . Str::random(5) . '.' . $file_extension;
+            $request->file('avatar')->move($lokasiFile, $this->fotoFile);
+            $fotoFile = $this->fotoFile;
+        }
 
-
-		$user = [
-			'name' => $request->name,
-			'username' => $request->name,
-			'email' => $request->email,
-			'role' => 3,
+        $user = [
+            'name' => $request->name,
+            'username' => $request->name,
+            'email' => $request->email,
+            'role' => 3,
             'password' => Hash::make($request->password),
-		];
-
-		$usercreate = User::create($user);
-		if($usercreate){
-			$empData = [
-				'id_user' => $usercreate->id,
-				'name' => $usercreate->name,
-				'email' => $usercreate->email,
-				'alamat' => $request->alamat,
-				'telp' => $request->telp,
-				'avatar' => $fotoFile
-			];
-			Guru::create($empData);
-		}
-        return response()->json([
-            'status' => 200,
-        ]);
+        ];
+        $usercreate = User::create($user);
+        if ($usercreate) {
+            $empData = [
+                'id_user' => $usercreate->id,
+                'name' => $usercreate->name,
+                'email' => $usercreate->email,
+                'alamat' => $request->alamat,
+                'telp' => $request->telp,
+                'avatar' => $fotoFile
+            ];
+            Guru::create($empData);
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 
     // handle edit an Tu ajax request
@@ -158,7 +156,7 @@ class GuruController extends Controller
     // handle update an Tu ajax request
     public function update(Request $request)
     {
-		$fileName = '';
+        $fileName = '';
         $emp = Guru::Find($request->id);
 
         // if ($request->hasFile('avatar')) {
@@ -172,35 +170,35 @@ class GuruController extends Controller
         //     $fileName = $request->id;
         // }
 
-		// $fileName = null;
-		$lampiranFulltextFile = null;
-		if($request->hasFile('avatar')){
+        // $fileName = null;
+        $lampiranFulltextFile = null;
+        if ($request->hasFile('avatar')) {
 
-			if ($emp->avatar) {
-				  File::delete(public_path('/guru/'.$emp->avatar));
+            if ($emp->avatar) {
+                File::delete(public_path('/guru/' . $emp->avatar));
             }
-			$file = $request->file('avatar');
-			$file_extension = $file->getClientOriginalExtension();
-			$lokasiFile = public_path().'/guru';
+            $file = $request->file('avatar');
+            $file_extension = $file->getClientOriginalExtension();
+            $lokasiFile = public_path() . '/guru';
 
-			$this->lampiranFulltextFile = 'foto-guru-'.$request->name.Str::random(5).'.'.$file_extension;
-			// $this->lampiranFulltextFile = $request->tahun_terbit.$request->singkatan_jenis.$kodeWilayah.$nomorPeraturan.'.'.$file_extension;
-			$request->file('avatar')->move($lokasiFile,$this->lampiranFulltextFile);
-			$lampiranFulltextFile = $this->lampiranFulltextFile;
-		} else {
-			$this->lampiranFulltextFile = $emp->avatar;
-			$lampiranFulltextFile = $this->lampiranFulltextFile;
-		}
+            $this->lampiranFulltextFile = 'foto-guru-' . $request->name . Str::random(5) . '.' . $file_extension;
+            // $this->lampiranFulltextFile = $request->tahun_terbit.$request->singkatan_jenis.$kodeWilayah.$nomorPeraturan.'.'.$file_extension;
+            $request->file('avatar')->move($lokasiFile, $this->lampiranFulltextFile);
+            $lampiranFulltextFile = $this->lampiranFulltextFile;
+        } else {
+            $this->lampiranFulltextFile = $emp->avatar;
+            $lampiranFulltextFile = $this->lampiranFulltextFile;
+        }
 
-	// $fotoFile = null;
-	// 	if($request->hasFile('avatar')){
-	// 		$file = $request->file('avatar');
-	// 		$file_extension = $file->getClientOriginalExtension();
-	// 		$lokasiFile = public_path().'guru';
-	// 		$this->fotoFile = 'foto-guru-'.$request->name.Str::random(5).'.'.$file_extension;
-	// 		$request->file('avatar')->move($lokasiFile,$this->fotoFile);
-	// 		$fotoFile = $this->fotoFile;
-	// 	}
+        // $fotoFile = null;
+        // 	if($request->hasFile('avatar')){
+        // 		$file = $request->file('avatar');
+        // 		$file_extension = $file->getClientOriginalExtension();
+        // 		$lokasiFile = public_path().'guru';
+        // 		$this->fotoFile = 'foto-guru-'.$request->name.Str::random(5).'.'.$file_extension;
+        // 		$request->file('avatar')->move($lokasiFile,$this->fotoFile);
+        // 		$fotoFile = $this->fotoFile;
+        // 	}
 
         $empData = [
             'name' => $request->name,
@@ -209,12 +207,12 @@ class GuruController extends Controller
             'telp' => $request->telp,
             'avatar' => $lampiranFulltextFile,
         ];
-		$update = [
+        $update = [
             'password' => Hash::make($request->password),
-		];
-		if($request->password){
-			$user = User::where('id', $emp->id_user)->update($update);
-		}
+        ];
+        if ($request->password) {
+            $user = User::where('id', $emp->id_user)->update($update);
+        }
         $emp->update($empData);
         return response()->json([
             'status' => 200,
@@ -226,19 +224,18 @@ class GuruController extends Controller
     {
         $id = $request->id;
         $emp = Guru::find($id);
-		User::destroy($emp->id_user);
-        if (File::delete(public_path('/guru/'.$emp->avatar))) {
+        User::destroy($emp->id_user);
+        if (File::delete(public_path('/guru/' . $emp->avatar))) {
             Guru::destroy($id);
-        }else{
-			 Guru::destroy($id);
-		}
+        } else {
+            Guru::destroy($id);
+        }
     }
 
-	public function importguru(Request $request)
-	{
-		$user = Excel::import(new GuruImport, $request->file);
-		// dd($user);
-		return back();
-	}
+    public function importguru(Request $request)
+    {
+        $user = Excel::import(new GuruImport, $request->file);
+        // dd($user);
+        return back();
+    }
 }
-

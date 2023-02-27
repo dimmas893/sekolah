@@ -1,7 +1,7 @@
 @extends('layouts.template.template')
 @section('content')
     <div class="main-content">
-        @php
+        {{-- @php
             $menuAkses = Auth::user()->role;
             if ($menuAkses === 5) {
                 $anda = 'Siswa';
@@ -12,10 +12,15 @@
             } elseif ($menuAkses === 1) {
                 $anda = 'Administrator';
             }
-        @endphp
+        @endphp --}}
         <section class="section">
             <div class="section-header">
-                <h1>Dashboard {{ $anda }}</h1>
+                <h1>Dashboard</h1>
+                {{-- <h1>Dashboard {{ $anda }}</h1> --}}
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item">Dashboard</div>
+                </div>
             </div>
 
             <div class="section-body">

@@ -37,8 +37,8 @@
             <div class="section-header">
                 <h1>Tabel Ujian</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Dashboard</a></div>
-                    <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar Jadwal</a>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Jadwal</a>
                     </div>
                     <div class="breadcrumb-item active"><a href="{{ route('jadwal-semua-siswa', $jadwal) }}">Kelas</a></div>
                     <div class="breadcrumb-item">Ujian</div>

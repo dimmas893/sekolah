@@ -5,7 +5,9 @@
             <div class="section-header">
                 <h1>Jadwal jenjang smp</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Semua kelas</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manageJadwal') }}">Semua kelas</a></div>
                     <div class="breadcrumb-item">Jadwal jenjang smp</div>
                 </div>
             </div>

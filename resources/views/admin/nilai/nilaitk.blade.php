@@ -5,34 +5,79 @@
             <div class="section-header">
                 <h1>Nilai jenjang tk</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Semua kelas</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manageNilai') }}">Semua kelas</a></div>
                     <div class="breadcrumb-item">Nilai semua jenjang tk</div>
                 </div>
             </div>
             <div class="section-body">
-                <div class="">
+                {{-- <div class="mb-3">
                     <div class="row">
-                        <div class="col-6">
-                            <form action="{{ route('pilihkelas') }}" method="get">
+                        <div class="col-12">
+                            <form action="{{ route('jadwalilport') }}" method="post" enctype="multipart/form-data">
                                 @csrf
-                                <div class="isMember my-2">
-                                    <label for="name">Mata Pelajaran</label>
-                                    <select name="mata_pelajaran_id" id="package" class="form-control">
-                                        <option value="" selected disabled>--- Pilih Kelas ---</option>
-                                        <option value="">Pilih Semua</option>
-                                        @foreach ($mata_pelajaran as $value)
-                                            <option value="{{ $value->id }}">
-                                                {{ $value->name }}
-                                                {{-- {{ $value->id }} --}}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <input type="file" name="file" class="form-control" />
+                                <input type="submit" value="import" class="btn btn-success">
                             </form>
                         </div>
                     </div>
-                </div>
-                <div id="sma">
+                </div> --}}
+
+                @foreach ($mata_pelajaran as $item)
+                    @php
+                        $guru = \App\Models\Jadwal::where('jenjang_pendidikan_id', 4)
+                            ->whereHas('kelasget', function ($q) use ($tahun) {
+                                $q->where('id_tahun_ajaran', $tahun);
+                            })
+                            ->where('mata_pelajaran_id', $item->mata_pelajaran_id)
+                            ->select('guru_id')
+                            ->groupBy('guru_id')
+                            ->get();
+                    @endphp
+                    <div class="card">
+                        <div class="card-header bg-secondary">
+                            <h4>{{ \App\Models\Mata_Pelajaran::where('id', $item->mata_pelajaran_id)->first()->name }}</h4>
+                        </div>
+                        @foreach ($guru as $gur)
+                            @php
+                                $kelas = \App\Models\Jadwal::where('jenjang_pendidikan_id', 4)
+                                    ->whereHas('kelasget', function ($q) use ($tahun) {
+                                        $q->where('id_tahun_ajaran', $tahun);
+                                    })
+                                    ->where('mata_pelajaran_id', $item->mata_pelajaran_id)
+                                    ->where('guru_id', $gur->guru_id)
+                                    ->select('kelas_id')
+                                    ->groupBy('kelas_id')
+                                    ->get();
+                            @endphp
+                            <div class="card-header">
+                                {{ \App\Models\Guru::where('id', $gur->guru_id)->first()->name }}
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    @foreach ($kelas as $kel)
+                                        <div class="col-lg-3">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                {{ \App\Models\Kelas::with('kelas')->where('id', $kel->kelas_id)->first()->kelas->name }}
+                                                <form action="{{ route('penilaian') }}" method="get">
+                                                    <input type="hidden" name="cek" value="1">
+                                                    <input type="hidden" name="kelas_id" value="{{ $kel->kelas_id }}">
+                                                    <input type="hidden" name="guru_id" value="{{ $gur->guru_id }}">
+                                                    <input type="hidden" name="mata_pelajaran_id"
+                                                        value="{{ $item->mata_pelajaran_id }}">
+                                                    <input type="submit" class="btn btn-info" value="masuk">
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endforeach
+
+                {{-- <div id="sma">
                     <div id="TU_all">
                         <h1 class="text-secondary my-5 text-center">
                             <div class="load-3">
@@ -42,14 +87,14 @@
                             </div>
                         </h1>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </section>
     </div>
 @endsection
 
 
-@section('js')
+{{-- @section('js')
     <script>
         $('.isMember').on('change', function(e) {
             const selectedPackage = $('#package').val();
@@ -88,4 +133,4 @@
             });
         }
     </script>
-@endsection
+@endsection --}}

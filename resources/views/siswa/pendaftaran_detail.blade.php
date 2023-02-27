@@ -1,12 +1,23 @@
 @extends('layouts.template.template')
 @section('content')
+    <form method="get" id="tbl_pendaftarans" action="{{ route('tbl_pendaftaran') }}" style="display:none;">
+        @csrf
+        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $pendaftaran->jenjang }}">
+    </form>
     <div class="main-content">
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Penerimaan Siswa Baru</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('tbl_pendaftaran') }}">Kembali</a></div>
-                    <div class="breadcrumb-item">Penerimaan Siswa Baru Detail</div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('siswatokelas') }}">Pilih tingkat</a></div>
+                    <div class="breadcrumb-item active"> <a href="{{ route('tbl_pendaftaran') }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('tbl_pendaftarans').submit();">
+                            Jenjang {{ \App\Models\JenjangPendidikan::where('id', $pendaftaran->jenjang)->first()->nama }}
+                        </a>
+                    </div>
+                    <div class="breadcrumb-item">Halaman Pembagian Kelas</div>
                 </div>
             </div>
             <form action="{{ route('siswa_lulus') }}" method="post">

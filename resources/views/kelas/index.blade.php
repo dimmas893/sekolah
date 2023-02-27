@@ -13,23 +13,23 @@
                     <form action="#" method="POST" id="add_TU_form" enctype="multipart/form-data">
                         @csrf
                         <div class="modal-body">
-                            <div class="my-2">
+                            <div class="isMember my-2">
                                 <label for="name">Jenjang</label>
-                                <select name="jenjang_pendidikan_id" class="form-control">
-                                    <option value="">--- Pilih Jenjang ---</option>
+                                <select name="jenjang_pendidikan_id" id="package" class="form-control">
+                                    <option value="null">--- Pilih Jenjang ---</option>
                                     @foreach ($jenjangpenddian as $item => $value)
-                                        <option value="{{ $value->id }}">{{ $value->nama }}</option>
+                                        <option value="{{ $value->id }}">{{ $value->nama }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="my-2">
-                                <label for="name">Tingkatan</label>
-                                <select name="tingkatan_id" class="form-control">
-                                    <option value="">--- Pilih Tingkatan ---</option>
-                                    @foreach ($tingkatan as $item => $value)
-                                        <option value="{{ $value->id }}">{{ $value->tingkat }}</option>
-                                    @endforeach
-                                </select>
+                            <div class="my-2 mt-3">
+                                <div id="sma">
+                                    <label for="name">Kelas</label>
+                                    <select class="form-control">
+                                        <option disabled selected>Mohon Untuk Memilih Jenjang Pendidikan</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="my-2">
                                 <label for="name">Nama Kelas</label>
@@ -106,7 +106,13 @@
 
         <section class="section">
             <div class="section-header">
-                <h1>Halaman Data Kelas</h1>
+                <h1>Halaman Data Master Kelas</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a>
+                    </div>
+                    <div class="breadcrumb-item">Tabel master kelas</div>
+                </div>
             </div>
             <div class="section-body">
                 <div class="row my-5">
@@ -138,6 +144,21 @@
 
 @section('js')
     <script>
+        $('.isMember').on('change', function(e) {
+            const selectedPackage = $('#package').val();
+            e.preventDefault();
+            $.ajax({
+                url: '{{ route('tingkatanajax') }}',
+                method: 'get',
+                data: {
+                    tingkatan_id: selectedPackage
+                },
+                success: function(response) {
+                    console.log(selectedPackage)
+                    $("#sma").html(response);
+                }
+            });
+        });
         $(function() {
             // add new employee ajax request
             $("#add_TU_form").submit(function(e) {

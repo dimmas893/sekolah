@@ -5,14 +5,14 @@
             <div class="section-header">
                 <h1>Halaman Data Soal <b>{{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}</b></h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Dashboard</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
                     <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar Jadwal</a>
                     </div>
                     <div class="breadcrumb-item active"><a href="{{ route('jadwal-semua-siswa', $jadwal_id) }}">Kelas</a>
                     </div>
                     <div class="breadcrumb-item active"><a href="{{ route('tabelujian', $jadwal_id) }}">Ujian</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('ujian-soal', $id) }}">Tabel Soal
+                    <div class="breadcrumb-item active"><a href="{{ route('ujian-soal', $id) }}">Soal
                             {{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}</a>
                     </div>
                     <div class="breadcrumb-item">Form Soal</div>

@@ -24,29 +24,52 @@
 
     <!-- /END GA -->
 </head>
+<div class="d-sm-none">
+    <style>
+        body.layout-3 .main-content {
+            padding-left: 0;
+            padding-right: 0;
+            padding-top: 170px;
+        }
+    </style>
 
-<body>
-    <div id="app">
-        <div class="main-wrapper main-wrapper-1">
-            <div class="navbar-bg"></div>
+    <body class="layout-3">
 
-            @include('layouts.template.navbar')
+</div>
+<div class="d-none d-xl-block d-lg-block d-md-block">
+    <style>
+        body.layout-3 .main-content {
+            padding-left: 0;
+            padding-right: 0;
+            padding-top: 125px;
+        }
+    </style>
 
-            @include('layouts.template.sidebar')
+    <body class="layout-3">
+</div>
+<div>
+    <div class="main-wrapper container">
 
-            <!-- Main Content -->
+        @include('layouts.template.navbar')
+
+        {{-- @include('layouts.template.sidebar') --}}
+
+        <!-- Main Content -->
 
 
 
 
-            @yield('content')
+        @yield('content')
 
-            @include('layouts.template.footer')
-        </div>
+        @include('layouts.template.footer')
     </div>
+</div>
 
 
-    @include('layouts.template.scripts')
+@include('layouts.template.scripts')
 </body>
+
+
+
 
 </html>

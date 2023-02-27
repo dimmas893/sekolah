@@ -82,17 +82,45 @@ class AdminController extends Controller
     }
     public function store(Request $request)
     {
-
-        $empData = [
-            'nomor_induk_pegawai' => $request->nomor_induk_pegawai,
-            'nama_admin' => $request->nama_admin,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ];
-        Admin::create($empData);
-        return response()->json([
-            'status' => 200,
-        ]);
+        if ($request->password) {
+            $user = [
+                'name' => $request->nama_admin,
+                'username' => $request->nama_admin,
+                'email' => $request->email,
+                'role' => 1,
+                'password' => Hash::make($request->password),
+            ];
+            $ambil = User::create($user);
+            $empData = [
+                'nomor_induk_pegawai' => $request->nomor_induk_pegawai,
+                'nama_admin' => $request->nama_admin,
+                'email' => $request->email,
+                'id_user' => $ambil->id,
+            ];
+            Admin::create($empData);
+            return response()->json([
+                'status' => 200,
+            ]);
+        } else {
+            $user = [
+                'name' => $request->nama_admin,
+                'username' => $request->nama_admin,
+                'email' => $request->email,
+                'role' => 1,
+                'password' => Hash::make('password'),
+            ];
+            $ambil = User::create($user);
+            $empData = [
+                'nomor_induk_pegawai' => $request->nomor_induk_pegawai,
+                'nama_admin' => $request->nama_admin,
+                'email' => $request->email,
+                'id_user' => $ambil->id,
+            ];
+            Admin::create($empData);
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 
     // handle edit an Tu ajax request
@@ -107,19 +135,44 @@ class AdminController extends Controller
     public function update(Request $request)
     {
         $emp = Admin::Find($request->id);
+        $datauser = User::Find($emp->id_user);
 
-        $empData = [
-            'nomor_induk_pegawai' => $request->nomor_induk_pegawai,
-            'nama_admin' => $request->nama_admin,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ];
-
-
-        $emp->update($empData);
-        return response()->json([
-            'status' => 200,
-        ]);
+        if ($request->password) {
+            $user = [
+                'name' => $request->nama_admin,
+                'username' => $request->nama_admin,
+                'email' => $request->email,
+                'role' => 1,
+                'password' => Hash::make($request->password),
+            ];
+            $datauser->update($user);
+            $empData = [
+                'nomor_induk_pegawai' => $request->nomor_induk_pegawai,
+                'nama_admin' => $request->nama_admin,
+                'email' => $request->email,
+            ];
+            $emp->update($empData);
+            return response()->json([
+                'status' => 200,
+            ]);
+        } else {
+            $user = [
+                'name' => $request->nama_admin,
+                'username' => $request->nama_admin,
+                'email' => $request->email,
+                'role' => 1,
+            ];
+            $datauser->update($user);
+            $empData = [
+                'nomor_induk_pegawai' => $request->nomor_induk_pegawai,
+                'nama_admin' => $request->nama_admin,
+                'email' => $request->email,
+            ];
+            $emp->update($empData);
+            return response()->json([
+                'status' => 200,
+            ]);
+        }
     }
 
     // handle delete an Tu ajax request
@@ -127,6 +180,7 @@ class AdminController extends Controller
     {
         $id = $request->id;
         $emp = Admin::find($id);
+        User::where('id', $emp->id_user)->delete();
         Admin::destroy($id);
     }
 }

@@ -94,6 +94,10 @@
                     <a class="nav-link" href="{{ route('jadwal_buat_guru') }}">
                         <i class="ion-document-text h4 mt-2"data-pack="default"></i>Jadwal</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="">
+                        <i class="ion-document-text h4 mt-2"data-pack="default"></i>Mata Pelajaran</a>
+                </li>
 
                 @php
                     $guru = \App\Models\Guru::where('id_user', Auth::user()->id)->first();

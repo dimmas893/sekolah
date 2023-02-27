@@ -5,7 +5,7 @@
             <div class="section-header">
                 <h1>Halaman Profile siswa</h1>
                 <div class="section-header-breadcrumb">
-                    <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Dashboard</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
                     <div class="breadcrumb-item">Halaman Profile siswa</div>
                 </div>
             </div>

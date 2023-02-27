@@ -9,6 +9,7 @@ use App\Models\Kelas;
 use App\Models\Master_Kelas;
 use App\Models\Mata_Pelajaran;
 use App\Models\Ruangan;
+use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\Tingkatan;
 use Illuminate\Http\Request;
@@ -17,21 +18,22 @@ class AdminNaikKelasController extends Controller
 {
     public function Ajaxtk(Request $request)
     {
-        // $setting = Setting::first();
+        $setting = Setting::first()->id_tahun_ajaran;
         $id = $request->id;
-        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->get();
+        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->whereHas('kelasget', function ($q) use ($setting) {
+            $q->where('id_tahun_ajaran', $setting);
+        })->get();
         $p = 1;
         $output = '';
         $kelas = Kelas::with('kelas')->where('id', $id)->first();
         if ($kelas) {
-            $output .= '<div class="card">';
-            $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
-                                                Kelas
-                                                ' . Master_Kelas::where('id', $kelas->id_master_kelas)->first()->name . '
+            $output .= '<div class="card shadow card-primary">';
+            $output .= ' <div class="card-header bg-primary d-flex justify-content-between align-items-center">
+                <h3 class="text-light">' . Master_Kelas::where('id', $kelas->id_master_kelas)->first()->name . '</h3>
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-light" value="Masuk">
                                                 </form>
                                             </div>';
         }
@@ -46,7 +48,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -59,11 +60,6 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
@@ -80,7 +76,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -93,30 +88,26 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
             echo $output;
         }
         if ($emps->count() === 0 && $id === null) {
-
-            $smp = Kelas::with('kelas')->whereIn('tingkatan_id', [14])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+            $jenjang = 4;
+            $smp = Kelas::with('kelas')->where('id_tahun_ajaran', $setting)->whereHas('kelas', function ($q) use ($jenjang) {
+                $q->where('jenjang_pendidikan_id', $jenjang);
+            })->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
             $p = 1;
             $output = '';
             foreach ($smp as $item) {
-                $output .= '<div class="card">';
-                $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
-                                                Kelas
-                                                ' . Master_Kelas::where('id', $item->id_master_kelas)->first()->name . '
+                $output .= '<div class="card shadow card-primary">';
+                $output .= ' <div class="card-header bg-primary d-flex justify-content-between align-items-center">
+                <h3 class="text-light">' . Master_Kelas::where('id', $item->id_master_kelas)->first()->name . '</h3>
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-light" value="Masuk">
                                                 </form>
                                             </div>';
                 $jadwal = \App\Models\Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')
@@ -153,21 +144,23 @@ class AdminNaikKelasController extends Controller
     }
     public function AjaxSd(Request $request)
     {
-        // $setting = Setting::first();
+        $setting = Setting::first()->id_tahun_ajaran;
         $id = $request->id;
-        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->get();
+        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->whereHas('kelasget', function ($q) use ($setting) {
+            $q->where('id_tahun_ajaran', $setting);
+        })->get();
         $p = 1;
         $output = '';
         $kelas = Kelas::with('kelas')->where('id', $id)->first();
         if ($kelas) {
-            $output .= '<div class="card">';
+            $output .= '<div class="card shadow card-primary">';
             $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
                                                 ' . Master_Kelas::where('id', $kelas->id_master_kelas)->first()->name . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
         }
@@ -182,7 +175,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -195,11 +187,6 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
@@ -216,7 +203,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -229,30 +215,27 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
             echo $output;
         }
         if ($emps->count() === 0 && $id === null) {
-
-            $smp = Kelas::with('kelas')->whereIn('tingkatan_id', [1, 2, 3, 4, 5, 6])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+            $jenjang = 1;
+            $smp = Kelas::with('kelas')->where('id_tahun_ajaran', $setting)->whereHas('kelas', function ($q) use ($jenjang) {
+                $q->where('jenjang_pendidikan_id', $jenjang);
+            })->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
             $p = 1;
             $output = '';
             foreach ($smp as $item) {
-                $output .= '<div class="card">';
+                $output .= '<div class="card shadow card-primary">';
                 $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
                                                 ' . Master_Kelas::where('id', $item->id_master_kelas)->first()->name . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
                 $jadwal = \App\Models\Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')
@@ -289,21 +272,23 @@ class AdminNaikKelasController extends Controller
     }
     public function AjaxSmp(Request $request)
     {
-        // $setting = Setting::first();
+        $setting = Setting::first()->id_tahun_ajaran;
         $id = $request->id;
-        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->get();
+        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->whereHas('kelasget', function ($q) use ($setting) {
+            $q->where('id_tahun_ajaran', $setting);
+        })->get();
         $p = 1;
         $output = '';
         $kelas = Kelas::with('kelas')->where('id', $id)->first();
         if ($kelas) {
-            $output .= '<div class="card">';
+            $output .= '<div class="card shadow card-primary">';
             $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
                                                 ' . Master_Kelas::where('id', $kelas->id_master_kelas)->first()->name . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
         }
@@ -318,7 +303,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -331,11 +315,6 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
@@ -352,7 +331,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -365,30 +343,27 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
             echo $output;
         }
         if ($emps->count() === 0 && $id === null) {
-
-            $smp = Kelas::with('kelas')->whereIn('tingkatan_id', [7, 8, 9])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+            $jenjang = 2;
+            $smp = Kelas::with('kelas')->where('id_tahun_ajaran', $setting)->whereHas('kelas', function ($q) use ($jenjang) {
+                $q->where('jenjang_pendidikan_id', $jenjang);
+            })->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
             $p = 1;
             $output = '';
             foreach ($smp as $item) {
-                $output .= '<div class="card">';
+                $output .= '<div class="card shadow card-primary">';
                 $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
                                                 ' . Master_Kelas::where('id', $item->id_master_kelas)->first()->name . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
                 $jadwal = \App\Models\Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')
@@ -426,21 +401,23 @@ class AdminNaikKelasController extends Controller
 
     public function AjaxSma(Request $request)
     {
-        // $setting = Setting::first();
+        $setting = Setting::first()->id_tahun_ajaran;
         $id = $request->id;
-        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->get();
+        $emps = Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')->where('kelas_id', $id)->whereHas('kelasget', function ($q) use ($setting) {
+            $q->where('id_tahun_ajaran', $setting);
+        })->get();
         $p = 1;
         $output = '';
         $kelas = Kelas::with('kelas')->where('id', $id)->first();
         if ($kelas) {
-            $output .= '<div class="card">';
+            $output .= '<div class="card shadow card-primary">';
             $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
                                                 ' . Master_Kelas::where('id', $kelas->id_master_kelas)->first()->name . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
         }
@@ -455,7 +432,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -468,11 +444,6 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
@@ -489,7 +460,6 @@ class AdminNaikKelasController extends Controller
                 <th>Hari</th>
                 <th>Jam Masuk</th>
                 <th>Jam Keluar</th>
-                <th>Action</th>
               </tr>
             </thead>
             <tbody>';
@@ -502,30 +472,27 @@ class AdminNaikKelasController extends Controller
                 <td>' . $emp->hari->name . '</td>
                 <td>' . $emp->jam_masuk . '</td>
                 <td>' . $emp->jam_keluar . '</td>
-				<td>
-
-                  <a href="#" id="' . $emp->id . '" jenjang_id="' . $emp->kelasget->kelas->jenjang_pendidikan_id . '" class="text-success mx-1 editIcon" data-toggle="modal" data-target="#editTUModal"><i class="ion-edit h4" data-pack="default" data-tags="on, off"></i></a>
-                  <a href="#" id="' . $emp->id . '" class="text-danger mx-1 deleteIcon"><i class="ion-trash-a h4" data-pack="default" data-tags="on, off"></i></a>
-				</td>
               </tr>';
             }
             $output .= '</tbody></table></div></div>';
             echo $output;
         }
         if ($emps->count() === 0 && $id === null) {
-
-            $smp = Kelas::with('kelas')->whereIn('tingkatan_id', [10, 11, 12])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+            $jenjang = 3;
+            $smp = Kelas::with('kelas')->where('id_tahun_ajaran', $setting)->whereHas('kelas', function ($q) use ($jenjang) {
+                $q->where('jenjang_pendidikan_id', $jenjang);
+            })->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
             $p = 1;
             $output = '';
             foreach ($smp as $item) {
-                $output .= '<div class="card">';
+                $output .= '<div class="card shadow card-primary">';
                 $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
                                                 ' . Master_Kelas::where('id', $item->id_master_kelas)->first()->name . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
-                                                    <input type="submit" class="btn btn-primary" value="Tambah">
+                                                    <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
                 $jadwal = \App\Models\Jadwal::with('mata_pelajaran', 'ruangan', 'guru', 'hari')
@@ -560,36 +527,89 @@ class AdminNaikKelasController extends Controller
             echo $output;
         }
     }
+    // public function tk()
+    // {
+    //     $tahun = Setting::first()->id_tahun_ajaran;
+    //     $jenjang = 4;
+    //     $tk = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjang) {
+    //         $q->where('jenjang_pendidikan_id', $jenjang);
+    //     })->select('id')->groupBy('id')->get();
+    //     $ampungkelas = [];
+
+    //     $cek = [];
+    //     foreach ($tk as $index => $value) {
+    //         $rincianSiswa = Siswa::where('kelas', $value->id)->select('nama_siswa as alias')->get();
+    //         array_push($ampungkelas, $rincianSiswa);
+    //     }
+    //     foreach ($tk as $index => $p) {
+    //         $pentol['kelas'] = $p->id;
+    //         $pentol['siswa'] = $ampungkelas[$index];
+    //         array_push($cek, $pentol);
+    //     }
+    //     return response()->json(['data' => $cek]);
+    // }
     public function tk()
     {
-        $tk = Kelas::with('kelas')->whereIn('tingkatan_id', [14])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjang = 4;
+        $tk = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjang) {
+            $q->where('jenjang_pendidikan_id', $jenjang);
+        })->select('id_master_kelas', 'id')->groupBy('id_master_kelas', 'id')->get();
         return view('admin.naikkelas.tk', compact('tk'));
     }
     public function sd()
     {
-        $sd = Kelas::with('kelas')->whereIn('tingkatan_id', [1, 2, 3, 4, 5, 6])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+        // $sd = Kelas::with('kelas')->whereIn('tingkatan_id', [1, 2, 3, 4, 5, 6])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjang = 1;
+        $sd = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjang) {
+            $q->where('jenjang_pendidikan_id', $jenjang);
+        })->select('id_master_kelas', 'id')->groupBy('id_master_kelas', 'id')->get();
         return view('admin.naikkelas.sd', compact('sd'));
     }
     public function smp()
     {
-        $smp = Kelas::with('kelas')->whereIn('tingkatan_id', [7, 8, 9])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+        // $smp = Kelas::with('kelas')->whereIn('tingkatan_id', [7, 8, 9])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjang = 2;
+        $smp = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjang) {
+            $q->where('jenjang_pendidikan_id', $jenjang);
+        })->select('id_master_kelas', 'id')->groupBy('id_master_kelas', 'id')->get();
         // dd($smp);
         return view('admin.naikkelas.smp', compact('smp'));
     }
     public function sma()
     {
-        $sma = Kelas::with('kelas')->whereIn('tingkatan_id', [10, 11, 12])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
-        $jadwal = Jadwal::with('mata_pelajaran')->get();
+        // $sma = Kelas::with('kelas')->whereIn('tingkatan_id', [10, 11, 12])->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjang = 3;
+        $sma = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjang) {
+            $q->where('jenjang_pendidikan_id', $jenjang);
+        })->select('id_master_kelas', 'id')->groupBy('id_master_kelas', 'id')->get();
+
         return view('admin.naikkelas.sma', compact('sma'));
     }
 
     public function semuakelas()
     {
-        $tingkat = Tingkatan::all();
-        $sd = Kelas::with('kelas')->whereIn('tingkatan_id', [1, 2, 3, 4, 5, 6])->get();
-        $smp = Kelas::with('kelas')->whereIn('tingkatan_id', [7, 8, 9])->get();
-        $sma = Kelas::with('kelas')->whereIn('tingkatan_id', [10, 11, 12])->get();
-        $tk = Kelas::with('kelas')->whereIn('tingkatan_id', [14])->get();
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjangsd = 1;
+        $sd = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangsd) {
+            $q->where('jenjang_pendidikan_id', $jenjangsd);
+        })->get();
+        $jenjangsmp = 2;
+        $smp = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangsmp) {
+            $q->where('jenjang_pendidikan_id', $jenjangsmp);
+        })->get();
+
+        $jenjangsma = 3;
+        $sma = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangsma) {
+            $q->where('jenjang_pendidikan_id', $jenjangsma);
+        })->get();
+        $jenjangtk = 4;
+        $tk = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangtk) {
+            $q->where('jenjang_pendidikan_id', $jenjangtk);
+        })->get();
         return view('admin.naikkelas.index', compact('sd', 'smp', 'sma', 'tk'));
     }
 

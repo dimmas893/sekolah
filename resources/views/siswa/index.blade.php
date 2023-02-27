@@ -4,9 +4,15 @@
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Data Siswa</h1>
+                <div class="section-header-breadcrumb">
+                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('infosiswa') }}">Informasi siswa</a>
+                    </div>
+                    <div class="breadcrumb-item">Tabel siswa</div>
+                </div>
             </div>
             <div class="section-body">
-                <form action="{{ route('siswa-excel') }}" method="post" enctype="multipart/form-data">
+                {{-- <form action="{{ route('siswa-excel') }}" method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-8 col-6">
@@ -20,9 +26,9 @@
                             <a href="{{ route('siswa-export') }}" class="btn btn-success">Export</a>
                         </div>
                     </div>
-                </form>
+                </form> --}}
                 <div class="section-body">
-                    <div class="row my-5">
+                    <div class="row">
                         <div class="col-lg-12">
                             <div class="card shadow">
                                 <div class="card-header bg-primary d-flex justify-content-between align-items-center">

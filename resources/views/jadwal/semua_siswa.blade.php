@@ -43,10 +43,10 @@
                         {{ $jadwal->mata_pelajaran->name }} /
                         {{ $jadwal->jam_masuk }} - {{ $jadwal->jam_keluar }} / Total ({{ $count }}) Siswa</h1>
                     <div class="section-header-breadcrumb">
-                        <div class="breadcrumb-item active"><a href="{{ route('dashboard') }}">Dashboard</a></div>
-                        <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar Jadwal</a>
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Jadwal</a>
                         </div>
-                        <div class="breadcrumb-item">jadwal</div>
+                        <div class="breadcrumb-item">Kelas</div>
                     </div>
                 </div>
                 <div class="row">

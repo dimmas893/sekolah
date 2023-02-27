@@ -15,8 +15,10 @@
             </div>
             <div class="section-body">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h4>Tabel Nilai</h4>
+                        <a href="/editnilai/{{ $mata_pelajaran_id }}/{{ $kelas_id }}" class="btn btn-success">Edit
+                            nilai</a>
                     </div>
                     <div id="TU_all">
                         <h1 class="text-secondary my-5 text-center">

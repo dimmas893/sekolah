@@ -138,3 +138,6 @@ Route::post('/v1/pinjam-perpus', [\App\Http\Controllers\Api\PerpustakaanControll
 Route::post('/dimmastesting', [App\Http\Controllers\Tagihan_SiswaController::class, 'TestingApi'])->name('TestingApi-store');
 
 Route::post('/v1/home/carousel', [App\Http\Controllers\Api\BeritaController::class, 'index'])->name('api-berita');
+
+
+Route::post('/tugas/buat_soal', [App\Http\Controllers\Api\TugasController::class, 'store_biasa']);

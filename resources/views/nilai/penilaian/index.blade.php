@@ -3,16 +3,44 @@
      <div class="main-content">
          <section class="section">
              <div class="section-header">
-                 <h1>Penilaian {{ $jadwal->kelasget->kelas->name }} / {{ $jadwal->ruangan->name }} /
-                     {{ $jadwal->mata_pelajaran->name }} /
-                     {{ $jadwal->jam_masuk }} - {{ $jadwal->jam_keluar }} / Total ({{ $count }}) Siswa</h1>
-                 <div class="section-header-breadcrumb">
-                     <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar
-                             Jadwal</a></div>
-                     <div class="breadcrumb-item active"><a href="{{ route('jadwal-semua-siswa', $jadwal->id) }}">Jadwal</a>
+                 <h1>Penilaian {{ $jadwal->kelasget->kelas->name }} / {{ $jadwal->mata_pelajaran->name }}</h1>
+                 @if ((int) Auth::user()->role === 1)
+                     <div class="section-header-breadcrumb">
+                         <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                         <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                         <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Semua kelas</a></div>
+                         <div class="breadcrumb-item active"><a href="{{ route('nilaitk') }}">Nilai semua jenjang tk</a>
+                         </div>
+                         <div class="breadcrumb-item">Daftar nilai kelas
+                             {{ $jadwal->kelasget->kelas->name }}
+                         </div>
                      </div>
-                     <div class="breadcrumb-item">Halaman Penilaian</div>
-                 </div>
+                 @endif
+
+                 @if ($cek === 0)
+                     <h1>Penilaian {{ $jadwal->kelasget->kelas->name }} / {{ $jadwal->ruangan->name }} /
+                         {{ $jadwal->mata_pelajaran->name }} /
+                         {{ $jadwal->jam_masuk }} - {{ $jadwal->jam_keluar }} / Total ({{ $count }}) Siswa</h1>
+                     <div class="section-header-breadcrumb">
+                         <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar
+                                 Jadwal</a></div>
+                         <div class="breadcrumb-item active"><a
+                                 href="{{ route('jadwal-semua-siswa', $jadwal->id) }}">Jadwal</a>
+                         </div>
+                         <div class="breadcrumb-item">Halaman Penilaian</div>
+                     </div>
+                 @else
+                     @if ((int) Auth::user()->role != 1)
+                         <div class="section-header-breadcrumb">
+                             <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                             <div class="breadcrumb-item active"><a href="{{ route('gurunilai') }}">Penilaian</a>
+                             </div>
+                             <div class="breadcrumb-item">Daftar nilai kelas
+                                 {{ $jadwal->kelasget->kelas->name }}
+                             </div>
+                         </div>
+                     @endif
+                 @endif
              </div>
              <div class="row">
                  <div class="col-12">
@@ -36,9 +64,10 @@
                                      @csrf
                                      <input type="hidden" name="tahun_ajaran" value="{{ $setting->id_tahun_ajaran }}">
                                      <input type="hidden" name="jadwal_id" value="{{ $jadwal->id }}">
+                                     <input type="hidden" name="guru_id" value="{{ $jadwal->guru_id }}">
+                                     <input type="hidden" name="kelas_id" value="{{ $jadwal->kelas_id }}">
                                      <input type="hidden" name="mata_pelajaran_id"
                                          value="{{ $jadwal->mata_pelajaran_id }}">
-                                     <input type="hidden" name="guru_id" value="{{ $jadwal->guru_id }}">
                                      <table class="table-striped table">
                                          <thead>
                                              <tr>

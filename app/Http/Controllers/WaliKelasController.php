@@ -529,12 +529,13 @@ class WaliKelasController extends Controller
                 }
             }
         } else {
-            $guru = Guru::where('id', $request->id)->first();
-            $kelas = Kelas::where('id_guru', $guru->id)->first();
+            // $guru = Guru::where('id', $request->id)->first();
+            $kelas = Kelas::where('id', $request->id)->first();
             $siswa = Siswa::where('kelas', $kelas->id)->get();
             $tingkat = Master_Kelas::where('id', $kelas->id_master_kelas)->first()->tingkatan_id;
 
             // dd($p->tingkat);
+            // dd($siswa);
             foreach ($siswa as $p) {
                 $wali = Wali_Siswa::where('id', $p->id_orang_tua)->first();
                 $cek_ke_2 = Siswa::where('id_orang_tua', $wali->id)->count();

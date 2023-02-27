@@ -21,18 +21,18 @@ class SiswaToKelasController extends Controller
     public function siswatokelas_get(Request $request)
     {
         $setting = Setting::first();
-        $siswa = Siswa::where('tingkat', $request->tingkatan_id)->where('kelas', null)->get();
-        $master_kelas = Master_Kelas::where('tingkatan_id', $request->tingkatan_id)->get();
+        $tingkatan_id = $request->tingkatan_id;
+        $siswa = Siswa::where('tingkat', $tingkatan_id)->where('kelas', null)->get();
+        $kelas = Kelas::where('id_tahun_ajaran', $setting->id_tahun_ajaran)->whereHas('kelas', function ($q) use ($tingkatan_id) {
+            $q->where('tingkatan_id', $tingkatan_id);
+        })->get();
+
+        // $master_kelas = Master_Kelas::->get();
         $tampungsisa = [];
-        foreach ($master_kelas as $p) {
-            $kelas = Kelas::where('id_tahun_ajaran', $setting->id_tahun_ajaran)->where('id_master_kelas', $p->id)->first();
-            if ($kelas != null) {
-                $hitung = Siswa::where('kelas', $kelas->id)->first();
-                $itungsiswa = $p->max - Siswa::where('kelas', $kelas->id)->count();
-            } else {
-                $itungsiswa = $p->max;
-            }
-            $row['name'] = $p['name'];
+        foreach ($kelas as $p) {
+            $hitung = Siswa::where('kelas', $p->id)->first();
+            $itungsiswa = $p['kelas']['max'] - Siswa::where('kelas', $p->id)->count();
+            $row['name'] = $p['kelas']['name'];
             $row['sisa'] = $itungsiswa;
             array_push($tampungsisa, $row);
         }

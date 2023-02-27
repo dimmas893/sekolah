@@ -6,6 +6,7 @@
                 <div class="section-header">
                     <h1> Pembagian Kelas </h1>
                     <div class="section-header-breadcrumb">
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
                         <div class="breadcrumb-item active"><a href="{{ route('siswatokelas') }}">Pilih tingkat</a></div>
                         <div class="breadcrumb-item">Halaman Pembagian Kelas</div>
                     </div>

@@ -17,6 +17,8 @@
                         <form action="#" method="POST" id="add_TU_form" enctype="multipart/form-data">
                             @csrf
                             <input type="hidden" name="kelas_id" value="{{ $kelas->id }}">
+                            <input type="hidden" name="jenjang_pendidikan_id"
+                                value="{{ \App\Models\Master_Kelas::where('id', $kelas->id_master_kelas)->first()->jenjang_pendidikan_id }}">
                             <input type="hidden" name="tingkatan_id" value="{{ $kelas->tingkatan_id }}">
                             <div class="modal-body">
                                 <div class="my-2">
@@ -149,21 +151,29 @@
                 <div class="section-header">
                     <h1>Halaman Data Jadwal </h1>
                     <div class="section-header-breadcrumb">
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
                         <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Semua kelas</a></div>
-                        @if ($kelas->tingkatan_id === 14)
+                        @php
+                            $tk = 4;
+                            $sd = 1;
+                            $smp = 2;
+                            $sma = 3;
+                        @endphp
+                        @if ($kelas->kelas->jenjang_pendidikan_id === 4)
                             <div class="breadcrumb-item active"><a href="{{ route('tk') }}">Jadwal jenjang tk</a></div>
                             <div class="breadcrumb-item">Jadwal kelas
                                 {{ $kelas->kelas->name }}</div>
-                        @elseif($kelas->tingkatan_id > 0 && $kelas->tingkatan_id < 7)
+                        @elseif($kelas->kelas->jenjang_pendidikan_id === 1)
                             <div class="breadcrumb-item active"><a href="{{ route('sd') }}">Jadwal jenjang sd</a></div>
                             <div class="breadcrumb-item">Jadwal kelas
                                 {{ $kelas->kelas->name }}</div>
-                        @elseif($kelas->tingkatan_id > 6 && $kelas->tingkatan_id < 10)
+                        @elseif($kelas->kelas->jenjang_pendidikan_id === 2)
                             <div class="breadcrumb-item active"><a href="{{ route('smp') }}">Jadwal jenjang smp</a>
                             </div>
                             <div class="breadcrumb-item">Jadwal kelas
                                 {{ $kelas->kelas->name }}</div>
-                        @elseif($kelas->tingkatan_id > 9 && $kelas->tingkatan_id < 13)
+                        @elseif($kelas->kelas->jenjang_pendidikan_id === 3)
                             <div class="breadcrumb-item active"><a href="{{ route('sma') }}">Jadwal jenjang sma</a>
                             </div>
                             <div class="breadcrumb-item">Jadwal kelas
