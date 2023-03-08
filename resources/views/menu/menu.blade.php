@@ -13,7 +13,7 @@
                     <div class="row">
                         <div class="col-lg-3">
                             <a href="{{ route('dashboard') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -37,7 +37,7 @@
                         </div>
                         <div class="col-lg-3">
                             <a href="{{ route('jadwal_buat_guru') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -61,7 +61,7 @@
                         </div>
                         <div class="col-lg-3">
                             <a href="{{ route('gurunilai') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -85,7 +85,7 @@
                         </div>
                         <div class="col-lg-3">
                             <a href="{{ route('WaliKelas') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -108,8 +108,8 @@
                             </a>
                         </div>
                         <div class="col-lg-3">
-                            <a href="{{ route('gurunilai') }}">
-                                <div class="card shadow card-success">
+                            <a href="{{ route('pilihmatapelajaran') }}">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -120,7 +120,7 @@
                                                                 src="/icon/childrens-kids-icon.webp" alt="First slide">
                                                         </div>
                                                         <div class="col-6">
-                                                            <img class="d-block" width="100px" src="/icon/mapel.png"
+                                                            <img class="d-block" width="100px" src="/icon/tugas.png"
                                                                 alt="First slide">
                                                         </div>
                                                     </div>
@@ -137,7 +137,7 @@
                     <div class="row">
                         <div class="col-lg-3">
                             <a href="{{ route('infosiswa') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -161,7 +161,7 @@
                         </div>
                         <div class="col-lg-3">
                             <a href="{{ route('siswatokelas') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -185,7 +185,7 @@
                         </div>
                         <div class="col-lg-3">
                             <a href="{{ route('penerimaansiswa') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -210,7 +210,7 @@
 
                         <div class="col-lg-3">
                             <a href="{{ route('menukenaikankelas') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -234,7 +234,7 @@
                         </div>
                         {{-- <div class="col-lg-3">
                             <a href="{{ route('semuakelas') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">
@@ -258,7 +258,7 @@
                         </div> --}}
                         <div class="col-lg-3">
                             <a href="{{ route('manage') }}">
-                                <div class="card shadow card-success">
+                                <div class="card shadow-primary card-primary">
                                     <div class="card-body">
                                         <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner">

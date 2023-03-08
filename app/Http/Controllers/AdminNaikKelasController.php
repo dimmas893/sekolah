@@ -33,6 +33,7 @@ class AdminNaikKelasController extends Controller
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $kelas->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="submit" class="btn btn-light" value="Masuk">
                                                 </form>
                                             </div>';
@@ -107,6 +108,7 @@ class AdminNaikKelasController extends Controller
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $item->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="submit" class="btn btn-light" value="Masuk">
                                                 </form>
                                             </div>';
@@ -160,6 +162,7 @@ class AdminNaikKelasController extends Controller
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $kelas->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
@@ -234,6 +237,7 @@ class AdminNaikKelasController extends Controller
                                                 ' . Master_Kelas::where('id', $item->id_master_kelas)->first()->name . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $item->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
                                                     <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
@@ -288,6 +292,7 @@ class AdminNaikKelasController extends Controller
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $kelas->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
@@ -363,6 +368,7 @@ class AdminNaikKelasController extends Controller
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $item->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
@@ -409,14 +415,16 @@ class AdminNaikKelasController extends Controller
         $p = 1;
         $output = '';
         $kelas = Kelas::with('kelas')->where('id', $id)->first();
+        // dd($kelas->kelas->je njang_pendidikan_id);
         if ($kelas) {
             $output .= '<div class="card shadow card-primary">';
             $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
-                                                ' . Master_Kelas::where('id', $kelas->id_master_kelas)->first()->name . '
+                                                ' . $kelas->kelas->name . ' - ' . $kelas->jurusan . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $kelas->id . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $kelas->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
@@ -481,17 +489,19 @@ class AdminNaikKelasController extends Controller
             $jenjang = 3;
             $smp = Kelas::with('kelas')->where('id_tahun_ajaran', $setting)->whereHas('kelas', function ($q) use ($jenjang) {
                 $q->where('jenjang_pendidikan_id', $jenjang);
-            })->select('id', 'id_master_kelas')->groupBy('id', 'id_master_kelas')->get();
+            })->get();
+            // dd($smp);
             $p = 1;
             $output = '';
             foreach ($smp as $item) {
                 $output .= '<div class="card shadow card-primary">';
                 $output .= ' <div class="card-header d-flex justify-content-between align-items-center">
                                                 Kelas
-                                                ' . Master_Kelas::where('id', $item->id_master_kelas)->first()->name . '
+                                                ' . $item->kelas->name . ' - ' . $item->jurusan . '
                                                 <form action="/jadwal-admin" method="get">
                                                     <input type="hidden" name="_token" value="' . csrf_token() . '" />
                                                     <input type="hidden" name="kelas_id" value="' . $item->id . '" />
+                                                    <input type="hidden" name="jenjang_pendidikan_id" value="' . $item->kelas->jenjang_pendidikan_id . '" />
                                                     <input type="submit" class="btn btn-primary" value="Masuk">
                                                 </form>
                                             </div>';
@@ -585,7 +595,7 @@ class AdminNaikKelasController extends Controller
         $jenjang = 3;
         $sma = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjang) {
             $q->where('jenjang_pendidikan_id', $jenjang);
-        })->select('id_master_kelas', 'id')->groupBy('id_master_kelas', 'id')->get();
+        })->get();
 
         return view('admin.naikkelas.sma', compact('sma'));
     }

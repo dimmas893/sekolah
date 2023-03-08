@@ -296,6 +296,12 @@ class PendaftaranController extends Controller
         if ($request->ceksekolah == '4') {
             $asal = $request->asal_sekolah;
         }
+
+        if ($request->jurusan) {
+            $jurusan = $request->jurusan;
+        } else {
+            $jurusan = null;
+        }
         $tanggalini = Carbon::now()->Format('Y-m-d');
         if (Pendaftaran::where('tingkat', $tingkat)->where('asal_sekolah', $asal)->where('nama_siswa', $request->nama_siswa)->where('jenjang', $request->ceksekolah)->where('tempat_lahir', $request->tempat_lahir)->where('tgl_lahir', $request->tgl_lahir)->where('jenis_kelamin', $request->jenis_kelamin)->where('agama', $request->agama)->where('no_telp', $request->no_telp)->where('email', $request->email)->where('no_telp_bapak', $request->no_telp_bapak)->where('no_telp_ibu', $request->no_telp_ibu)->first() === null) {
             $create = [
@@ -313,7 +319,8 @@ class PendaftaranController extends Controller
                 'no_telp_bapak' => $request->no_telp_bapak,
                 'no_telp_ibu' => $request->no_telp_ibu,
                 'tgl_daftar' => $tanggalini,
-                'status' => 0
+                'status' => 0,
+                'jurusan' => $jurusan
             ];
             $email = $request->email;
             $nama_siswa = $request->nama_siswa;
@@ -401,6 +408,7 @@ class PendaftaranController extends Controller
                 $create = [
                     'id_user' => $us->id,
                     'id_orang_tua' => $walidata->id,
+                    'jurusan' => $pendaftaran->jurusan,
                     'nama_siswa' => $pendaftaran->nama_siswa,
                     'tingkat' => $pendaftaran->tingkat,
                     'tempat_lahir' => $pendaftaran->tempat_lahir,

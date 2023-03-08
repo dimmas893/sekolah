@@ -12,18 +12,6 @@
                 </div>
             </div>
             <div class="section-body">
-                {{-- <div class="mb-3">
-                    <div class="row">
-                        <div class="col-12">
-                            <form action="{{ route('jadwalilport') }}" method="post" enctype="multipart/form-data">
-                                @csrf
-                                <input type="file" name="file" class="form-control" />
-                                <input type="submit" value="import" class="btn btn-success">
-                            </form>
-                        </div>
-                    </div>
-                </div> --}}
-
                 @foreach ($mata_pelajaran as $item)
                     @php
                         $guru = \App\Models\Jadwal::where('jenjang_pendidikan_id', 3)
@@ -35,7 +23,7 @@
                             ->groupBy('guru_id')
                             ->get();
                     @endphp
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-header bg-secondary">
                             <h4>{{ \App\Models\Mata_Pelajaran::where('id', $item->mata_pelajaran_id)->first()->name }}</h4>
                         </div>
@@ -58,25 +46,30 @@
                                 <div class="row">
                                     @foreach ($kelas as $kel)
                                         <div class="col-lg-3">
-                                            <div class="card-header d-flex justify-content-between align-items-center">
-                                                {{ \App\Models\Kelas::with('kelas')->where('id', $kel->kelas_id)->first()->kelas->name }}
-                                                <form action="{{ route('penilaian') }}" method="get">
-                                                    <input type="hidden" name="cek" value="1">
-                                                    <input type="hidden" name="kelas_id" value="{{ $kel->kelas_id }}">
-                                                    <input type="hidden" name="guru_id" value="{{ $gur->guru_id }}">
-                                                    <input type="hidden" name="mata_pelajaran_id"
-                                                        value="{{ $item->mata_pelajaran_id }}">
-                                                    <input type="submit" class="btn btn-info" value="masuk">
-                                                </form>
+                                            <div class="card shadow card-primary">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    {{ \App\Models\Kelas::with('kelas')->where('id', $kel->kelas_id)->first()->kelas->name }}
+                                                    <form action="{{ route('penilaian') }}" method="get">
+                                                        <input type="hidden" name="cek" value="1">
+                                                        <input type="hidden" name="kelas_id" value="{{ $kel->kelas_id }}">
+                                                        <input type="hidden" name="guru_id" value="{{ $gur->guru_id }}">
+                                                        <input type="hidden" name="jenjang_pendidikan_id"
+                                                            value="{{ $jenjang_pendidikan_id }}">
+                                                        <input type="hidden" name="mata_pelajaran_id"
+                                                            value="{{ $item->mata_pelajaran_id }}">
+                                                        <input type="submit" class="btn btn-info" value="masuk">
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
-                        @endforeach
                     </div>
                 @endforeach
             </div>
-        </section>
+            @endforeach
+    </div>
+    </section>
     </div>
 @endsection

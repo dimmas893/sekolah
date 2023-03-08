@@ -30,13 +30,80 @@ class jadwalController extends Controller
         return back();
     }
 
+    public function menutugas(Request $request)
+    {
+        $jadwal_id = $request->jadwal_id;
+
+        $jadwal = Jadwal::where('id', $jadwal_id)->first();
+        return view('jadwal.menu.tugas', compact('jadwal'));
+    }
+    public function menuubahabsen(Request $request)
+    {
+        $jadwal_id = $request->jadwal_id;
+        $setting = Setting::first();
+        $jadwal = Jadwal::where('id', $jadwal_id)->first();
+        $rincian_siswa = Siswa::where('kelas', $jadwal->kelas_id)->get();
+        return view('jadwal.menu.absen', compact('jadwal', 'rincian_siswa', 'setting'));
+    }
+    public function menusiswa(Request $request)
+    {
+        $jadwal_id = $request->jadwal_id;
+        $setting = Setting::first();
+        $jadwal = Jadwal::where('id', $jadwal_id)->first();
+        $rincian_siswa = Siswa::where('kelas', $jadwal->kelas_id)->get();
+        return view('jadwal.menu.siswa', compact('jadwal', 'rincian_siswa', 'setting'));
+    }
+    public function menuabsenmassal(Request $request)
+    {
+        $jadwal_id = $request->jadwal_id;
+        $setting = Setting::first();
+        $jadwal = Jadwal::where('id', $jadwal_id)->first();
+
+        $rincian_siswa = Siswa::where('kelas', $jadwal->kelas_id)->get();
+        $cekabsen = Absen::where('jadwal_id', $jadwal->id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('tanggal', Carbon::now()->Format('Y-m-d'))->count();
+        $cekabsen_get = Absen::where('jadwal_id', $jadwal->id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('tanggal', Carbon::now()->Format('Y-m-d'))->get();
+
+        $tampung_absen = [];
+        $laporan = [];
+        $tampung_absen_2 = [];
+        foreach ($rincian_siswa as $p) {
+            $absen = Absen::with('jadwal', 'siswa')->where('siswa_id', $p->id)->where('jadwal_id', $jadwal->id)->where('semester', $setting->semester)->where('tahun_ajaran', $setting->id_tahun_ajaran)->orderBy('id', 'DESC')->first();
+            array_push($tampung_absen, $absen);
+        }
+        // dd($tampung_absen);
+        if ($rincian_siswa) {
+            foreach ($tampung_absen as $pe) {
+                if ($pe) {
+                    $hadir = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '0')->count();
+                    $sakit = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '1')->count();
+                    $izin = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '2')->count();
+                    $alpha = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '3')->count();
+                    $terlambat = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '4')->count();
+                    // $nama_siswa = Rincian_Siswa::with('siswa')->where('jadwal_id', $pe->jadwal_id)->first();
+                    $row['siswa'] = $pe['siswa']['nama_siswa'];
+                    $row['jadwal'] = $pe['jadwal']['kelasget']['kelas']['name'] . ' / ' . $pe['jadwal']['ruangan']['name'] . ' / ' . $pe['jadwal']['mata_pelajaran']['name'];
+                    $row['pertemuan'] = $hadir + $sakit + $izin + $alpha + $terlambat;
+                    $row['hadir'] = $hadir;
+                    $row['sakit'] = $sakit;
+                    $row['izin'] = $izin;
+                    $row['alpha'] = $alpha;
+                    $row['terlambat'] = $terlambat;
+                    array_push($laporan, $row);
+                }
+            }
+        }
+        return view('jadwal.menu.absen-massal', compact('rincian_siswa', 'jadwal', 'setting', 'cekabsen', 'cekabsen_get', 'laporan'));
+    }
 
     public function jadwal_buat_guru()
     {
+        $tahun = Setting::first()->id_tahun_ajaran;
         $user = User::where('id', Auth::user()->id)->first();
         if ($user->role == 3) {
             $guru = Guru::where('id_user', $user->id)->first();
-            $jadwal = Jadwal::with('ruangan', 'kelasget', 'mata_pelajaran', 'guru', 'hari')->where('guru_id', $guru->id)->get();
+            $jadwal = Jadwal::with('ruangan', 'kelasget', 'mata_pelajaran', 'guru', 'hari')->whereHas('kelasget', function ($q) use ($tahun) {
+                $q->where('id_tahun_ajaran', $tahun);
+            })->where('guru_id', $guru->id)->get();
             $mata_pelajaran = Mata_Pelajaran::select('id', 'name')->orderBy('id')->get();
             return view('guru.halaman_user.jadwal', compact('mata_pelajaran', 'jadwal'));
         } else {
@@ -304,39 +371,8 @@ class jadwalController extends Controller
         $count = Siswa::where('kelas', $jadwal->kelas_id)->count();
 
         $setting = Setting::first();
-        $cekabsen = Absen::where('jadwal_id', $jadwal->id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('tanggal', Carbon::now()->Format('Y-m-d'))->count();
-        $cekabsen_get = Absen::where('jadwal_id', $jadwal->id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('tanggal', Carbon::now()->Format('Y-m-d'))->get();
 
-        $tampung_absen = [];
-        $laporan = [];
-        $tampung_absen_2 = [];
-        foreach ($rincian_siswa as $p) {
-            $absen = Absen::with('jadwal', 'siswa')->where('siswa_id', $p->id)->where('jadwal_id', $jadwal->id)->where('semester', $setting->semester)->where('tahun_ajaran', $setting->id_tahun_ajaran)->orderBy('id', 'DESC')->first();
-            array_push($tampung_absen, $absen);
-        }
-        // dd($tampung_absen);
-        if ($rincian_siswa) {
-            foreach ($tampung_absen as $pe) {
-                if ($pe) {
-                    $hadir = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '0')->count();
-                    $sakit = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '1')->count();
-                    $izin = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '2')->count();
-                    $alpha = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '3')->count();
-                    $terlambat = $pe->where('siswa_id', $pe->siswa_id)->where('tahun_ajaran', $setting->id_tahun_ajaran)->where('semester', $setting->semester)->where('jadwal_id', $pe->jadwal_id)->where('tipe_kehadiran', '4')->count();
-                    // $nama_siswa = Rincian_Siswa::with('siswa')->where('jadwal_id', $pe->jadwal_id)->first();
-                    $row['siswa'] = $pe['siswa']['nama_siswa'];
-                    $row['jadwal'] = $pe['jadwal']['kelasget']['kelas']['name'] . ' / ' . $pe['jadwal']['ruangan']['name'] . ' / ' . $pe['jadwal']['mata_pelajaran']['name'];
-                    $row['pertemuan'] = $hadir + $sakit + $izin + $alpha + $terlambat;
-                    $row['hadir'] = $hadir;
-                    $row['sakit'] = $sakit;
-                    $row['izin'] = $izin;
-                    $row['alpha'] = $alpha;
-                    $row['terlambat'] = $terlambat;
-                    array_push($laporan, $row);
-                }
-            }
-        }
-        return view('jadwal.semua_siswa', compact('rincian_siswa', 'jadwal', 'count', 'setting', 'cekabsen', 'cekabsen_get', 'laporan'));
+        return view('jadwal.semua_siswa', compact('rincian_siswa', 'jadwal', 'count', 'setting'));
     }
 
     // handle insert a new Tu ajax request

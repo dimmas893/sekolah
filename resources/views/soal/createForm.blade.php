@@ -1,21 +1,54 @@
 @extends('layouts.template.template')
 @section('content')
+    <form method="get" id="pilihtingkatanujian_id" action="{{ route('pilihtingkatanujian') }}" style="display:none;">
+        @csrf
+        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+        <input type="submit" class="btn btn-primary" value="Masuk">
+    </form>
+
+    <form method="get" id="pilihmatapelajaranujian_id" action="{{ route('pilihmatapelajaranujian') }}"
+        style="display:none;">
+        @csrf
+        {{-- <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}"> --}}
+        <input type="hidden" name="tingkatan_id" value="{{ $tingkatan_id }}">
+        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+        <input type="submit" class="btn btn-primary" value="Masuk">
+    </form>
+    <form method="get" id="ujian_id_nih" action="/ujian/soal/{{ $id }}" style="display:none;">
+        @csrf
+        {{-- <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}"> --}}
+        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+        <input type="hidden" name="mata_pelajaran_id" value="{{ $mata_pelajaran }}">
+        <input type="hidden" name="tingkatan_id" value="{{ $tingkatan_id }}">
+    </form>
+
     <div class="main-content">
         <section class="section">
             <div class="section-header">
                 <h1>Halaman Data Soal <b>{{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}</b></h1>
                 <div class="section-header-breadcrumb">
+                    {{-- <div class="breadcrumb-item active"><a href="{{ route('jadwal') }}">Table Jadwal
+                        </a></div> --}}
                     <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
-                    <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar Jadwal</a>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihjenjangujian') }}">Jenjang</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihtingkatanujian') }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('pilihtingkatanujian_id').submit();">Tingkatan</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('jadwal-semua-siswa', $jadwal_id) }}">Kelas</a>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihmatapelajaranujian') }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('pilihmatapelajaranujian_id').submit();">Mata
+                            Pelajaran</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('tabelujian', $jadwal_id) }}">Ujian</a>
+                    <div class="breadcrumb-item active"><a
+                            href="/tabel-ujian/{{ $mata_pelajaran }}/{{ $tingkatan_id }}/{{ $jenjang_pendidikan_id }}">Ujian</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('ujian-soal', $id) }}">Soal
-                            {{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}</a>
+                    <div class="breadcrumb-item active"><a href="/ujian/soal/{{ $id }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('ujian_id_nih').submit();">Soal</a>
                     </div>
-                    <div class="breadcrumb-item">Form Soal</div>
+                    <div class="breadcrumb-item">Form soal</div>
                 </div>
             </div>
 
@@ -30,6 +63,10 @@
                         <div class="card-body">
                             <form method="post" action="{{ route('soal-store') }}">
                                 @csrf
+
+                                <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+                                <input type="hidden" name="mata_pelajaran_id" value="{{ $mata_pelajaran }}">
+                                <input type="hidden" name="tingkatan_id" value="{{ $tingkatan_id }}">
                                 @for ($i = 0; $i < $form; $i++)
                                     <input type="hidden" name="ujian_id[]" value="{{ $id }}">
                                     <div>
@@ -82,40 +119,6 @@
 @endsection
 
 @section('js')
-    <script>
-        var createClickHandler = function(arg) {
-            return function() {
-                alert(arg);
-            };
-        }
-
-        for (var a = 0; a < 10; a++) {
-            var b = document.createElement('b')
-            b.onclick = createClickHandler(a);
-            b.innerHTML = a
-            document.body.appendChild(b)
-        }
-        $(document).ready(function() {
-            // membatasi jumlah inputan
-            var maxGroup = 20;
-
-            //melakukan proses multiple input
-            $(".addMore").click(function() {
-                if ($('body').find('.fieldGroup').length < maxGroup) {
-                    var fieldHTML = '<div class="form-group fieldGroup">' + $(".fieldGroupCopy").html() +
-                        '</div>';
-                    $('body').find('.fieldGroup:last').after(fieldHTML);
-                } else {
-                    alert('Maximum ' + maxGroup + ' groups are allowed.');
-                }
-            });
-
-            //remove fields group
-            $("body").on("click", ".remove", function() {
-                $(this).parents(".fieldGroup").remove();
-            });
-        });
-    </script>
     <script>
         $(function() {
             // add new employee ajax request

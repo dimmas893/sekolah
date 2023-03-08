@@ -19,63 +19,86 @@
         <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jadwal->jenjang_pendidikan_id }}">
         <input type="hidden" name="guru_id" value="{{ $jadwal->guru_id }}">
     </form>
+
     <div class="main-content">
         <section class="section">
             <div class="section-header">
                 <h1>Tugas</h1>
-                <div class="section-header-breadcrumb">
-                    {{-- <div class="breadcrumb-item active"><a href="{{ route('jadwal') }}">Table Jadwal
-                        </a></div> --}}
-                    <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
-                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
-                    <div class="breadcrumb-item active"><a href="{{ route('manageTugas') }}">Semua kelas</a></div>
-                    <div class="breadcrumb-item active"> <a class="" href="{{ route('manageTugasMataPelajaran') }}"
-                            onclick="event.preventDefault();document.getElementById('manageTugasMataPelajaran_id').submit();">Mata
-                            Pelajaran
-                        </a></div>
-                    <div class="breadcrumb-item active"> <a class="" href="{{ route('manageTugasMataPelajaran') }}"
-                            onclick="event.preventDefault();document.getElementById('manageTugasMataPelajaranguru_id').submit();">Guru
-                        </a></div>
-                    <div class="breadcrumb-item active"> <a class=""
-                            href="{{ route('manageTugasMataPelajarangurujadwal') }}"
-                            onclick="event.preventDefault();document.getElementById('manageTugasMataPelajarangurujadwal_id').submit();">Jadwal
-                        </a></div>
-                    <div class="breadcrumb-item">Tugas</div>
-                </div>
+
+
+                @php
+                    $guru = \App\Models\Guru::where('id_user', Auth::user()->id)->first();
+                @endphp
+                @if ($guru)
+                    <form method="get" id="pilihmatapelajaran_id" action="{{ route('pilihmatapelajaran') }}"
+                        style="display:none;">
+                        @csrf
+                        <input type="hidden" name="mata_pelajaran_id" value="{{ $jadwal->mata_pelajaran_id }}">
+                        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jadwal->jenjang_pendidikan_id }}">
+                    </form>
+                    <form method="get" id="pilihtingkatan_id" action="{{ route('pilihtingkatan') }}"
+                        style="display:none;">
+                        @csrf
+                        {{-- <input type="hidden" name="guru_id" value="{{ $guru->id }}"> --}}
+                        <input type="hidden" name="mata_pelajaran_id" value="{{ $jadwal->mata_pelajaran_id }}">
+                    </form>
+                    <div class="section-header-breadcrumb">
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                        <div class="breadcrumb-item active"> <a href="{{ route('pilihmatapelajaran') }}"
+                                onclick="event.preventDefault();document.getElementById('pilihmatapelajaran_id').submit();">Mata
+                                Pelajaran
+                            </a></div>
+                        <div class="breadcrumb-item active"> <a href="{{ route('pilihtingkatan') }}"
+                                onclick="event.preventDefault();document.getElementById('pilihtingkatan_id').submit();">Kelas
+                            </a></div>
+                        <div class="breadcrumb-item">Tugas</div>
+                    </div>
+                @else
+                    <div class="section-header-breadcrumb">
+                        <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                        <div class="breadcrumb-item active"><a href="{{ route('manageTugas') }}">Semua kelas</a></div>
+                        <div class="breadcrumb-item active"> <a href="{{ route('manageTugasMataPelajaran') }}"
+                                onclick="event.preventDefault();document.getElementById('manageTugasMataPelajaran_id').submit();">Mata
+                                Pelajaran
+                            </a></div>
+                        <div class="breadcrumb-item active"> <a href="{{ route('manageTugasMataPelajaran') }}"
+                                onclick="event.preventDefault();document.getElementById('manageTugasMataPelajaranguru_id').submit();">Guru
+                            </a></div>
+                        <div class="breadcrumb-item active"> <a href="{{ route('manageTugasMataPelajarangurujadwal') }}"
+                                onclick="event.preventDefault();document.getElementById('manageTugasMataPelajarangurujadwal_id').submit();">Kelas
+                            </a></div>
+                        <div class="breadcrumb-item">Tugas</div>
+                    </div>
+                @endif
+
             </div>
             <div class="section-body">
-                <div class="">
-                    <div class="row">
-                        <div class="col-6">
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between bg-secondary align-items-center">
-                                {{ \App\Models\JenjangPendidikan::where('id', $jadwal->jenjang_pendidikan_id)->first()->nama }}
-                                -
-                                {{ \App\Models\Mata_Pelajaran::where('id', $jadwal->mata_pelajaran_id)->first()->name }} -
-                                {{ \App\Models\Guru::where('id', $jadwal->guru_id)->first()->name }} -
-                                {{ \App\Models\Kelas::with('kelas')->where('id', $jadwal->kelas_id)->first()->kelas->name }}
-                                -
-                                {{ \App\Models\Ruangan::where('id', $jadwal->ruangan_id)->first()->name }} -
-                                {{ \App\Models\Hari::where('id', $jadwal->hari_id)->first()->name }} -
-                                {{ $jadwal->jam_masuk }} -
-                                {{ $jadwal->jam_keluar }}
-                            </div>
+                        <div class="">
                             <div class="row">
                                 <div class="col-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h4>Buat Tugas</h4>
+                                    <div class="card shadow card-success">
+                                        <div class="card-header d-flex justify-content-between align-items-center">
+                                            {{ \App\Models\JenjangPendidikan::where('id', $jadwal->jenjang_pendidikan_id)->first()->nama }}
+                                            -
+                                            {{ \App\Models\Mata_Pelajaran::where('id', $jadwal->mata_pelajaran_id)->first()->name }}
+                                            -
+                                            {{ \App\Models\Guru::where('id', $jadwal->guru_id)->first()->name }} -
+                                            {{ \App\Models\Kelas::with('kelas')->where('id', $jadwal->kelas_id)->first()->kelas->name }}
                                         </div>
                                         <div class="card-body">
                                             <form action="{{ route('tugas-store-biasa') }}" method="POST"
                                                 enctype="multipart/form-data">
                                                 @csrf
-                                                <input type="hidden" name="jadwal_id" value="{{ $jadwal->id }}">
+                                                {{-- <input type="hidden" name="jadwal_id" value="{{ $jadwal->id }}"> --}}
+                                                <input type="hidden" name="kelas_id" value="{{ $jadwal->kelas_id }}">
+                                                <input type="hidden" name="mata_pelajaran_id"
+                                                    value="{{ $jadwal->mata_pelajaran_id }}">
+                                                <input type="hidden" name="guru_id" value="{{ $jadwal->guru_id }}">
+                                                <input type="hidden" name="jenjang_pendidikan_id"
+                                                    value="{{ $jadwal->jenjang_pendidikan_id }}">
                                                 <div class="row">
                                                     <div class="form-group col-md-6 col-12">
                                                         <label for="">Tanggal Tugas</label>
@@ -92,8 +115,9 @@
                                                 <div class="row">
                                                     <div class="form-group col-md-6 col-12">
                                                         <label for="">Tanggal Evaluasi</label>
-                                                        <input type="date" name="tanggal_evaluasi" class="form-control"
-                                                            placeholder="Masukan Tanggal Evaluasi" required>
+                                                        <input type="date" name="tanggal_evaluasi"
+                                                            class="form-control" placeholder="Masukan Tanggal Evaluasi"
+                                                            required>
                                                     </div>
                                                     <div class="form-group col-md-6 col-12">
                                                         <label for="">File Tugas</label>

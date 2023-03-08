@@ -121,14 +121,9 @@
                                         <div class="form-group col-md-6 col-12">
                                             <label>Agama</label>
                                             <select name="agama" class="form-control">
-                                                <option value="">---Pilih Agama---</option>
-                                                @if ($siswa->agama == 'Islam')
-                                                    <option value="Islam" selected>Islam</option>
-                                                    <option value="Kristen">Kristen</option>
-                                                @else
-                                                    <option value="Islam">Islam</option>
-                                                    <option value="Kristen" selected>Kristen</option>
-                                                @endif
+                                                <option value="" selected disabled>---Pilih Agama---</option>
+                                                <option value="Islam">Islam</option>
+                                                <option value="Kristen">Kristen</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-md-6 col-12">
@@ -189,14 +184,9 @@
                                             <div class="form-group col-md-6 col-12">
                                                 <label>Agama</label>
                                                 <select name="agama_bapak" class="form-control">
-                                                    <option value="">---Pilih Agama---</option>
-                                                    @if ($wali->agama_bapak == 'Islam')
-                                                        <option value="Islam" selected>Islam</option>
-                                                        <option value="Kristen">Kristen</option>
-                                                    @else
-                                                        <option value="Islam">Islam</option>
-                                                        <option value="Kristen" selected>Kristen</option>
-                                                    @endif
+                                                    <option value="" selected disabled>---Pilih Agama---</option>
+                                                    <option value="Islam">Islam</option>
+                                                    <option value="Kristen">Kristen</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -238,14 +228,9 @@
                                             <div class="form-group col-md-6 col-12">
                                                 <label>Agama</label>
                                                 <select name="agama_ibu" class="form-control">
-                                                    <option value="">---Pilih Agama---</option>
-                                                    @if ($wali->agama_ibu == 'Islam')
-                                                        <option value="Islam" selected>Islam</option>
-                                                        <option value="Kristen">Kristen</option>
-                                                    @else
-                                                        <option value="Islam">Islam</option>
-                                                        <option value="Kristen" selected>Kristen</option>
-                                                    @endif
+                                                    <option value="" selected disabled>---Pilih Agama---</option>
+                                                    <option value="Islam" selected>Islam</option>
+                                                    <option value="Kristen">Kristen</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -284,9 +269,8 @@
                                             <div class="form-group col-md-6 col-12">
                                                 <label>Agama</label>
                                                 <select name="agama_bapak" class="form-control">
-                                                    <option value="">---Pilih Agama---</option>
+                                                    <option value="" selected disabled>---Pilih Agama---</option>
                                                     <option value="Islam">Islam</option>
-                                                    <option value="Kristen">Kristen</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -324,9 +308,8 @@
                                             <div class="form-group col-md-6 col-12">
                                                 <label>Agama</label>
                                                 <select name="agama_ibu" class="form-control">
-                                                    <option value="">---Pilih Agama---</option>
+                                                    <option value="" selected disabled>---Pilih Agama---</option>
                                                     <option value="Islam">Islam</option>
-                                                    <option value="Kristen">Kristen</option>
                                                 </select>
                                             </div>
                                         </div>

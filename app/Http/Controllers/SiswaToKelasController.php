@@ -26,13 +26,12 @@ class SiswaToKelasController extends Controller
         $kelas = Kelas::where('id_tahun_ajaran', $setting->id_tahun_ajaran)->whereHas('kelas', function ($q) use ($tingkatan_id) {
             $q->where('tingkatan_id', $tingkatan_id);
         })->get();
-
         // $master_kelas = Master_Kelas::->get();
         $tampungsisa = [];
         foreach ($kelas as $p) {
-            $hitung = Siswa::where('kelas', $p->id)->first();
+            // dd($p['kelas']['jurusan']);
             $itungsiswa = $p['kelas']['max'] - Siswa::where('kelas', $p->id)->count();
-            $row['name'] = $p['kelas']['name'];
+            $row['name'] = $p['kelas']['name'] . ' - ' .  $p['jurusan'];
             $row['sisa'] = $itungsiswa;
             array_push($tampungsisa, $row);
         }
@@ -64,6 +63,7 @@ class SiswaToKelasController extends Controller
 
     public function SimpanMasukKelas($idSiswa, $tahunAjaran, $tingkatan)
     {
+        $tes = Siswa::where('id', $idSiswa)->first();
         $tingkatan = $tingkatan;
         $dataKelas = Kelas::where('id_tahun_ajaran', $tahunAjaran)->with(['kelas'])
             ->whereHas('kelas', function ($q) use ($tingkatan) {
@@ -71,15 +71,16 @@ class SiswaToKelasController extends Controller
             })
             ->get();
         if ($dataKelas) {
-            foreach ($dataKelas as $isi) {
+            foreach ($dataKelas->where('jurusan', $tes->jurusan) as $isi) {
                 if ($isi->rincianSiswa) {
                     if ($isi->kelas->max > $isi->rincianSiswa->count()) {
                         # code...
-                        Siswa::where('id', $idSiswa)->update(['kelas' => $isi->id]);
+                        Siswa::where('id', $idSiswa)->where('jurusan', $isi->jurusan)->update(['kelas' => $isi->id]);
                         return $isi->id;
                     }
                 } else {
-                    Siswa::where('id', $idSiswa)->update(['kelas' => $isi->id]);
+                    Siswa::where('id', $idSiswa)->where('jurusan', $isi->jurusan)->update(['kelas' => $isi->id]);
+
                     return $isi->id;
                 }
             }

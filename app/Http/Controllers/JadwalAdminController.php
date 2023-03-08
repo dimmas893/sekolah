@@ -16,7 +16,8 @@ class JadwalAdminController extends Controller
 {
     public function index(Request $request)
     {
-        // $request->kelas_id;
+        // dd($request->all());
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
         $kelas = Kelas::with('kelas')->where('id', $request->kelas_id)->first();
 
         $guru = Guru::all();
@@ -25,12 +26,16 @@ class JadwalAdminController extends Controller
         $ruangan = Ruangan::all();
         $setting = Setting::first();
         $tahun_ajaran = Tahun_ajaran::get();
-        return view('admin.naikkelas.jadwal', compact('tahun_ajaran', 'guru', 'mata_pelajaran', 'hari', 'ruangan', 'kelas'));
+        return view('admin.naikkelas.jadwal', compact('tahun_ajaran', 'guru', 'mata_pelajaran', 'hari', 'ruangan', 'kelas', 'jenjang_pendidikan_id'));
     }
 
     public function all($id)
     {
-        $emps = Jadwal::with('guru', 'mata_pelajaran')->where('kelas_id', $id)->get();
+
+        $setting = Setting::first()->id_tahun_ajaran;
+        $emps = Jadwal::with('guru', 'mata_pelajaran')->where('kelas_id', $id)->whereHas('kelasget', function ($q) use ($id, $setting) {
+            $q->where('id', $id)->where('id_tahun_ajaran', $setting);
+        })->get();
         $output = '';
         $p = 1;
         if ($emps->count() > 0) {

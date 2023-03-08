@@ -28,20 +28,14 @@
                     <div class="breadcrumb-item active"> <a class="" href="{{ route('manageTugasMataPelajaran') }}"
                             onclick="event.preventDefault();document.getElementById('manageTugasMataPelajaranguru_id').submit();">Guru
                         </a></div>
-                    <div class="breadcrumb-item">Jadwal</div>
+                    <div class="breadcrumb-item">Kelas</div>
                 </div>
             </div>
             <div class="section-body">
-                <div class="">
-                    <div class="row">
-                        <div class="col-6">
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between bg-secondary align-items-center">
+                        <div class="card shadow card-success">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 {{ \App\Models\JenjangPendidikan::where('id', $jenjang_pendidikan_id)->first()->nama }} -
                                 {{ \App\Models\Mata_Pelajaran::where('id', $mata_pelajaran_id)->first()->name }} -
                                 {{ \App\Models\Guru::where('id', $guru_id)->first()->name }}
@@ -50,31 +44,23 @@
                                 <div class="row">
                                     @foreach ($jadwal as $item)
                                         <div class="col-md-12 col-lg-12 col-xl-3 col-xxl-12 col-sm-12">
-                                            <div class="card card-primary">
+                                            <div class="card shadow card-primary">
                                                 <div class="card-header d-flex justify-content-between align-items-center">
-                                                    <h4>{{ \App\Models\Jadwal::with('kelasget')->where('id', $item->id)->first()->kelasget->kelas->name }}
-                                                        /
-                                                        {{ \App\Models\Jadwal::with('ruangan')->where('mata_pelajaran_id', $mata_pelajaran_id)->where('id', $item->id)->first()->ruangan->name }}
-                                                        {{ \App\Models\Jadwal::with('mata_pelajaran')->where('mata_pelajaran_id', $mata_pelajaran_id)->where('id', $item->id)->first()->mata_pelajaran->name }}
-                                                        -{{ \App\Models\Siswa::where('kelas',\App\Models\Jadwal::with('ruangan')->where('id', $item->id)->first()->kelas_id)->count() }}
-                                                        (Siswa)
+                                                    <h4>{{ \App\Models\Kelas::with('kelas')->where('id', $item->kelas_id)->first()->kelas->name }}
                                                     </h4>
-                                                </div>
-                                                <div class="card-body">
-                                                    <p>{{ \App\Models\Jadwal::with('hari')->where('id', $item->id)->first()->hari->name }}
-                                                    </p>
-                                                    <p>{{ \App\Models\Jadwal::with('kelasget')->where('id', $item->id)->first()->jam_masuk }}
-                                                        -
-                                                        {{ \App\Models\Jadwal::with('kelasget')->where('id', $item->id)->first()->jam_keluar }}
-                                                    </p>
                                                     <form
                                                         action="{{ route('manageTugasMataPelajarangurujadwalbuattugas') }}"
                                                         method="get">
                                                         @csrf
-                                                        <input type="hidden" name="jadwal_id" value="{{ $item->id }}">
+                                                        <input type="hidden" name="kelas_id"
+                                                            value="{{ $item->kelas_id }}">
+                                                        <input type="hidden" name="mata_pelajaran_id"
+                                                            value="{{ $mata_pelajaran_id }}">
+                                                        <input type="hidden" name="guru_id" value="{{ $guru_id }}">
+                                                        <input type="hidden" name="jenjang_pendidikan_id"
+                                                            value="{{ $jenjang_pendidikan_id }}">
                                                         <input type="submit" class="btn btn-primary" value="Masuk">
                                                     </form>
-                                                    {{-- <a href="" class="btn btn-primary">Masuk</a> --}}
                                                 </div>
                                             </div>
                                         </div>

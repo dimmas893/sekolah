@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mata_Pelajaran;
+use App\Models\Tingkatan;
 use Illuminate\Http\Request;
 
 class Mata_PelajaranController extends Controller
@@ -10,7 +11,8 @@ class Mata_PelajaranController extends Controller
     // set index page view
     public function index()
     {
-        return view('mata_pelajaran.index');
+        $tingkatan = Tingkatan::get();
+        return view('mata_pelajaran.index', compact('tingkatan'));
     }
 
     // handle fetch all eamployees ajax request
@@ -20,7 +22,7 @@ class Mata_PelajaranController extends Controller
         // <td><img src="/storage/images/' . $emp->image . '" width="50" class="img-thumbnail rounded-circle"></td>
         $emps = Mata_Pelajaran::all();
         $output = '';
-        $p = 1 ;
+        $p = 1;
         if ($emps->count() > 0) {
             $output .= '<table class="table table-bordered table-md display nowrap" style="width:100%">
             <thead>
@@ -54,10 +56,56 @@ class Mata_PelajaranController extends Controller
         // $file = $request->file('image');
         // $fileName = time() . '.' . $file->getClientOriginalExtension();
         // $file->storeAs('public/images', $fileName);
+        // dd($request->all());
+        if ((int)$request->tingkatan < 7 && $request->tingkatan > 0) {
+            $jenjang = 1;
+        }
+        if ((int)$request->tingkatan < 10 && $request->tingkatan > 6) {
+            $jenjang = 2;
+        }
+        if (
+            (int)$request->tingkatan < 13 && $request->tingkatan > 9
+        ) {
+            $jenjang = 3;
+        }
+        if (
+            (int)$request->tingkatan === 4
+        ) {
+            $jenjang = 4;
+        }
 
-        $empData = [
-            'name' => $request->name,
-        ];
+        if ($request->jurusan11 != null) {
+            $empData = [
+                'name' => $request->name,
+                'tingkatan' => $request->tingkatan,
+                'jurusan' => $request->jurusan11,
+                'jenjang_pendidikan_id' => $jenjang,
+            ];
+        }
+        if ($request->jurusan12 != null) {
+            $empData = [
+                'name' => $request->name,
+                'tingkatan' => $request->tingkatan,
+                'jurusan' => $request->jurusan12,
+                'jenjang_pendidikan_id' => $jenjang,
+            ];
+        }
+        if ($request->jurusan10 != null) {
+            $empData = [
+                'name' => $request->name,
+                'tingkatan' => $request->tingkatan,
+                'jurusan' => $request->jurusan10,
+                'jenjang_pendidikan_id' => $jenjang,
+            ];
+        }
+        if ($request->jurusan10 === null && $request->jurusan11 === null && $request->jurusan12 === null) {
+            $empData = [
+                'name' => $request->name,
+                'tingkatan' => $request->tingkatan,
+                'jurusan' => null,
+                'jenjang_pendidikan_id' => $jenjang,
+            ];
+        }
         Mata_Pelajaran::create($empData);
         return response()->json([
             'status' => 200,
@@ -103,6 +151,6 @@ class Mata_PelajaranController extends Controller
     public function delete(Request $request)
     {
         $id = $request->id;
-            Mata_Pelajaran::destroy($id);
+        Mata_Pelajaran::destroy($id);
     }
 }

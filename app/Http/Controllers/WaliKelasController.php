@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Alumni;
 use App\Models\Guru;
 use App\Models\Kelas;
+use App\Models\Setting;
 use App\Models\Master_Kelas;
 use App\Models\Siswa;
 use App\Models\User;
@@ -335,6 +336,7 @@ class WaliKelasController extends Controller
     }
     public function NaikKelas(Request $request)
     {
+        $setting = Setting::first();
         if ($request['group']) {
             foreach ($request['group'] as $pu) {
                 $ceklagi = Siswa::where('id', $pu)->first();
@@ -529,14 +531,19 @@ class WaliKelasController extends Controller
                 }
             }
         } else {
-            // $guru = Guru::where('id', $request->id)->first();
-            $kelas = Kelas::where('id', $request->id)->first();
-            $siswa = Siswa::where('kelas', $kelas->id)->get();
+            $guru = Guru::where('id_user', $request->id)->first();
+            $kelas = Kelas::where('id_guru', $guru->id)->first();
+            $kelasid = $kelas->id;
+            $tahun = $setting->id_tahun_ajaran;
+            $siswa = Siswa::whereHas('kelas_siswa', function ($q) use ($kelasid, $tahun) {
+                $q->where('id', $kelasid)->where('id_tahun_ajaran', $tahun);
+            })->get();
+            // dd($siswa);
             $tingkat = Master_Kelas::where('id', $kelas->id_master_kelas)->first()->tingkatan_id;
 
             // dd($p->tingkat);
-            // dd($siswa);
             foreach ($siswa as $p) {
+                // dd($siswa);
                 $wali = Wali_Siswa::where('id', $p->id_orang_tua)->first();
                 $cek_ke_2 = Siswa::where('id_orang_tua', $wali->id)->count();
                 if ((int)$p->tingkat === 12) {

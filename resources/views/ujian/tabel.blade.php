@@ -1,5 +1,20 @@
 @extends('layouts.template.template')
 @section('content')
+    <form method="get" id="pilihtingkatanujian_id" action="{{ route('pilihtingkatanujian') }}" style="display:none;">
+        @csrf
+        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+        <input type="submit" class="btn btn-primary" value="Masuk">
+    </form>
+
+    <form method="get" id="pilihmatapelajaranujian_id" action="{{ route('pilihmatapelajaranujian') }}"
+        style="display:none;">
+        @csrf
+        {{-- <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}"> --}}
+        <input type="hidden" name="tingkatan_id" value="{{ $tingkatan_id }}">
+        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+        <input type="submit" class="btn btn-primary" value="Masuk">
+    </form>
+
     <div class="main-content">
         <div class="modal fade" id="add_TU_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog  modal-dialog-centered">
@@ -9,7 +24,9 @@
                     </div>
                     <form action="{{ route('ujian-store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <input type="hidden" name="jadwal_id" value="{{ $jadwal }}">
+                        <input type="hidden" name="mata_pelajaran_id" value="{{ $mata_pelajaran }}">
+                        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+                        <input type="hidden" name="tingkatan" value="{{ $tingkatan_id }}">
                         <div class="modal-body">
                             <div class="my-2">
                                 <label>Jenis Ujian</label>
@@ -37,10 +54,20 @@
             <div class="section-header">
                 <h1>Tabel Ujian</h1>
                 <div class="section-header-breadcrumb">
+                    {{-- <div class="breadcrumb-item active"><a href="{{ route('jadwal') }}">Table Jadwal
+                        </a></div> --}}
                     <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
-                    <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Jadwal</a>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihjenjangujian') }}">Jenjang</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihtingkatanujian') }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('pilihtingkatanujian_id').submit();">Tingkatan</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('jadwal-semua-siswa', $jadwal) }}">Kelas</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihmatapelajaranujian') }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('pilihmatapelajaranujian_id').submit();">Mata
+                            Pelajaran</a>
+                    </div>
                     <div class="breadcrumb-item">Ujian</div>
                 </div>
             </div>
@@ -48,6 +75,7 @@
                 <div class="row my-5">
                     <div class="col-lg-12">
                         <div class="card shadow">
+
                             <div class="card-header bg-primary d-flex justify-content-between align-items-center">
                                 <h3 class="text-light">Tabel Ujian</h3>
                                 <button class="btn btn-light" data-toggle="modal" data-target="#add_TU_modal"><i
@@ -117,7 +145,7 @@
 
             function TU_all() {
                 $.ajax({
-                    url: '{{ route('ujian-all', $jadwal) }}',
+                    url: '/ujian/all/{{ $mata_pelajaran }}/{{ $tingkatan_id }}/{{ $jenjang_pendidikan_id }}',
                     method: 'get',
                     success: function(response) {
                         $("#TU_all").html(response);

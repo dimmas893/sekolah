@@ -31,27 +31,29 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-header d-flex justify-content-between bg-secondary align-items-center">
+                        <div class="card shadow card-success">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 {{ \App\Models\JenjangPendidikan::where('id', $jenjang_pendidikan_id)->first()->nama }} -
                                 {{ \App\Models\Mata_Pelajaran::where('id', $mata_pelajaran_id)->first()->name }}
                             </div>
                             <div class="card-body">
-                                <div class="row">
+                                <div class="">
                                     @foreach ($guru as $item)
-                                        <div class="col-3">
-                                            <div class="card-header d-flex justify-content-between align-items-center">
-                                                {{ \App\Models\Guru::where('id', $item->guru_id)->first()->name }}
-                                                <form action="{{ route('manageTugasMataPelajarangurujadwal') }}"
-                                                    method="get">
-                                                    @csrf
-                                                    <input type="hidden" name="mata_pelajaran_id"
-                                                        value="{{ $mata_pelajaran_id }}">
-                                                    <input type="hidden" name="jenjang_pendidikan_id"
-                                                        value="{{ $jenjang_pendidikan_id }}">
-                                                    <input type="hidden" name="guru_id" value="{{ $item->guru_id }}">
-                                                    <input type="submit" class="btn btn-primary" value="Masuk">
-                                                </form>
+                                        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-3 col-xxl-3">
+                                            <div class="card shadow card-primary">
+                                                <div class="card-header d-flex justify-content-between align-items-center">
+                                                    {{ \App\Models\Guru::where('id', $item->guru_id)->first()->name }}
+                                                    <form action="{{ route('manageTugasMataPelajarangurujadwal') }}"
+                                                        method="get">
+                                                        @csrf
+                                                        <input type="hidden" name="mata_pelajaran_id"
+                                                            value="{{ $mata_pelajaran_id }}">
+                                                        <input type="hidden" name="jenjang_pendidikan_id"
+                                                            value="{{ $jenjang_pendidikan_id }}">
+                                                        <input type="hidden" name="guru_id" value="{{ $item->guru_id }}">
+                                                        <input type="submit" class="btn btn-primary" value="Masuk">
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach

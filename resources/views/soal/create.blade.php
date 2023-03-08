@@ -96,7 +96,10 @@
                 <div class="modal-content">
                     <form action="{{ route('SoalForm') }}" method="get">
                         <input type="hidden" name="id" value="{{ $id }}">
-                        <input type="hidden" name="jadwal_id" value="{{ $jadwal_id }}">
+                        {{-- <input type="hidden" name="jadwal_id" value="{{ $jadwal_id }}"> --}}
+                        <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+                        <input type="hidden" name="mata_pelajaran_id" value="{{ $mata_pelajaran }}">
+                        <input type="hidden" name="tingkatan_id" value="{{ $tingkatan_id }}">
                         @csrf
                         <div class="modal-body">
                             <div class="my-2">
@@ -113,20 +116,54 @@
                 </div>
             </div>
         </div>
+        <form method="get" id="pilihtingkatanujian_id" action="{{ route('pilihtingkatanujian') }}"
+            style="display:none;">
+            @csrf
+            <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+            <input type="submit" class="btn btn-primary" value="Masuk">
+        </form>
+
+        <form method="get" id="pilihmatapelajaranujian_id" action="{{ route('pilihmatapelajaranujian') }}"
+            style="display:none;">
+            @csrf
+            {{-- <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}"> --}}
+            <input type="hidden" name="tingkatan_id" value="{{ $tingkatan_id }}">
+            <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+            <input type="submit" class="btn btn-primary" value="Masuk">
+        </form>
+        {{-- <form method="get" id="ujian_id_nih" action="/tabel-ujian/{{ $mata_pelajaran }}/{{ $tingkatan_id }}"
+            style="display:none;">
+            @csrf
+            <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+            <input type="hidden" name="jenjang_pendidikan_id" value="{{ $jenjang_pendidikan_id }}">
+            <input type="hidden" name="mata_pelajaran_id" value="{{ $mata_pelajaran }}">
+            <input type="hidden" name="tingkatan_id" value="{{ $tingkatan_id }}">
+            <input type="submit" class="btn btn-primary" value="Masuk">
+        </form> --}}
         <section class="section">
             <div class="section-header">
-                <h1>Halaman Data Soal <b>{{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}</b></h1>
+                <h1>Halaman Data Soal {{ $tingkatan_id }}
+                    <b>{{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}</b>
+                </h1>
                 <div class="section-header-breadcrumb">
+                    {{-- <div class="breadcrumb-item active"><a href="{{ route('jadwal') }}">Table Jadwal
+                        </a></div> --}}
                     <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
-                    <div class="breadcrumb-item active"><a href="{{ route('jadwal_buat_guru') }}">Daftar Jadwal</a>
+                    <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihjenjangujian') }}">Jenjang</a></div>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihtingkatanujian') }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('pilihtingkatanujian_id').submit();">Tingkatan</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('jadwal-semua-siswa', $jadwal_id) }}">Kelas</a>
+                    <div class="breadcrumb-item active"><a href="{{ route('pilihmatapelajaranujian') }}"
+                            onclick="event.preventDefault();
+                                    document.getElementById('pilihmatapelajaranujian_id').submit();">Mata
+                            Pelajaran</a>
                     </div>
-                    <div class="breadcrumb-item active"><a href="{{ route('tabelujian', $jadwal_id) }}">Ujian</a>
+                    <div class="breadcrumb-item active"><a
+                            href="/tabel-ujian/{{ $mata_pelajaran }}/{{ $tingkatan_id }}/{{ $jenjang_pendidikan_id }}">Ujian</a>
                     </div>
-                    <div class="breadcrumb-item">Soal
-                        <b>{{ \App\Models\Ujian::where('id', $id)->first()->jenis_ujian }}
-                    </div>
+                    <div class="breadcrumb-item">Soal</div>
                 </div>
             </div>
             <div class="section-body">

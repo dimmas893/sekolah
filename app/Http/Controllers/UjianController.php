@@ -2,22 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Jadwal;
+use App\Models\Kelas;
+use App\Models\Mata_Pelajaran;
 use Illuminate\Http\Request;
 use App\Models\Soal;
 use App\Models\Pengaturan;
 use App\Models\Nilai;
+use App\Models\Setting;
 use App\Models\Ujian;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class UjianController extends Controller
 {
-    public function tabelujian(Request $request, $id)
+    public function tabelujian(Request $request, $id, $tingkatan_id, $jenjang_pendidikan_id)
     {
-        $jadwal = $id;
-
-        return view('ujian.tabel', compact('jadwal'));
+        // dd($request->all());
+        $mata_pelajaran = $id;
+        $jenjang_pendidikan_id = $jenjang_pendidikan_id;
+        $tingkatan_id = $tingkatan_id;
+        // $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
+        return view('ujian.tabel', compact('mata_pelajaran', 'jenjang_pendidikan_id', 'tingkatan_id', 'jenjang_pendidikan_id'));
     }
+
+    public function pilihjenjangujian(Request $request)
+    {
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjangsd = 1;
+        $sd = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangsd) {
+            $q->where('jenjang_pendidikan_id', $jenjangsd);
+        })->get();
+        $jenjangsmp = 2;
+        $smp = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangsmp) {
+            $q->where('jenjang_pendidikan_id', $jenjangsmp);
+        })->get();
+
+        $jenjangsma = 3;
+        $sma = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangsma) {
+            $q->where('jenjang_pendidikan_id', $jenjangsma);
+        })->get();
+        $jenjangtk = 4;
+        $tk = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjangtk) {
+            $q->where('jenjang_pendidikan_id', $jenjangtk);
+        })->get();
+        return view('ujian.pilihjenjang', compact('sd', 'smp', 'sma', 'tk'));
+    }
+
+
+    public function pilihtingkatanujian(Request $request)
+    {
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjang_pendidikan_id = (int)$request->jenjang_pendidikan_id;
+        $tingkatan = Kelas::where('id_tahun_ajaran', $tahun)->whereHas('kelas', function ($q) use ($jenjang_pendidikan_id) {
+            $q->where('jenjang_pendidikan_id', $jenjang_pendidikan_id);
+        })->select('id_master_kelas')->groupBy('id_master_kelas')->get();
+        // dd($tingkatan);
+        return view('ujian.pilihtingkatan', compact('tingkatan', 'tahun', 'jenjang_pendidikan_id'));
+    }
+
+    public function pilihmatapelajaranujian(Request $request)
+    {
+        // dd($request->all());
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjang_pendidikan_id = (int)$request->jenjang_pendidikan_id;
+        $tingkatan_id = (int)$request->tingkatan_id;
+        $mata_pelajaran = Mata_Pelajaran::where('tingkatan', $tingkatan_id)->where('jenjang_pendidikan_id', $jenjang_pendidikan_id)->get();
+        return view('ujian.pilihmatapelajaran', compact('mata_pelajaran', 'tahun', 'jenjang_pendidikan_id', 'tingkatan_id'));
+    }
+
     public function lembarSoal()
     {
         $soal = Soal::get();
@@ -92,9 +145,14 @@ class UjianController extends Controller
             throw $th;
         }
     }
-    public function all($id)
+    public function all($id, $tingkatan_id, $jenjang_pendidikan_id)
     {
-        $emps = Ujian::where('jadwal_id', $id)->get();
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $jenjang_pendidikan = $jenjang_pendidikan_id;
+        $emps = Ujian::whereHas('mata_pelajaran', function ($q) use ($id, $tingkatan_id) {
+            $q->where('id', $id)->where('tingkatan', $tingkatan_id);
+        })->where('tahun_ajaran_id', $tahun)->get();
+        // dd($emps);
         $output = '';
         $p = 1;
         $csrf = csrf_token();
@@ -120,7 +178,9 @@ class UjianController extends Controller
                 <td>
 				<form action="/ujian/soal/' . $emp->id . '" method="get">
 				<input type="hidden" name="_token" value="' . $csrf . '" />
-				<input type="hidden" name="jadwal_id" value="' . $id . '" />
+				<input type="hidden" name="mata_pelajaran_id" value="' . $emp->mata_pelajaran->id . '" />
+				<input type="hidden" name="jenjang_pendidikan_id" value="' . $jenjang_pendidikan . '" />
+				<input type="hidden" name="tingkatan_id" value="' . $emp->mata_pelajaran->tingkatan . '" />
 				';
                 $output .= '<input type="submit" class="text-info mx-1" value="Soal"/>
 				</form>
@@ -139,8 +199,13 @@ class UjianController extends Controller
 
     public function store(Request $request)
     {
+
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $mata_pelajaran = Mata_Pelajaran::where('id', (int)$request->mata_pelajaran_id)->where('tingkatan', (int)$request->tingkatan)->first();
+        // dd($mata_pelajaran);
         $empData = [
-            'jadwal_id' => $request->jadwal_id,
+            'tahun_ajaran_id' => $tahun,
+            'mata_pelajaran_id' => $mata_pelajaran->id,
             'jenis_ujian' => $request->jenis_ujian,
             'tanggal' => $request->tanggal,
         ];
@@ -148,8 +213,30 @@ class UjianController extends Controller
         $soal = Soal::with('ujian')->where('ujian_id', $ujian->id)->get();
 
         $id = $ujian->id;
-        $jadwal_id = $ujian->jadwal_id;
-        return view('soal.create', compact('soal', 'id', 'jadwal_id'));
+        $mata_pelajaran = $id;
+        $tingkatan_id = $request->tingkatan;
+        $mata_pelajaran = $request->mata_pelajaran_id;
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
+        return view('soal.create', compact('soal', 'id', 'tingkatan_id', 'mata_pelajaran', 'jenjang_pendidikan_id'));
+    }
+
+    public function soal(Request $request, $id)
+    {
+        // dd($request->all());
+
+        $id = $id;
+        // $ujian = Ujian::where('id', $id)->first();
+        $soal = Soal::with('ujian')->where('ujian_id', $id)->get();
+        // dd($soal);
+        $mata_pelajaran = $request->mata_pelajaran_id;
+        $tingkatan_id = $request->tingkatan_id;
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
+        return view('soal.create', compact('soal', 'id', 'tingkatan_id', 'mata_pelajaran', 'jenjang_pendidikan_id'));
+
+        // $ids = $id;
+        // $soal = Soal::with('ujian')->where('ujian_id', $ids)->get();
+        // $jadwal_id = $request->jadwal_id;
+        // return view('soal.create', compact('soal', 'id', 'jadwal_id'));
     }
 
     public function edit(Request $request)
@@ -185,33 +272,19 @@ class UjianController extends Controller
         }
     }
 
-    public function soal(Request $request, $id)
-    {
-        // dd($request->all());
 
-        $ujian = Ujian::where('id', $id)->first();
-        $id = $ujian->id;
-        $soal = Soal::with('ujian')->where('ujian_id', $ujian->id)->get();
-        $jadwal_id = $ujian->jadwal_id;
-        return view(
-            'soal.create',
-            compact('soal', 'id', 'jadwal_id')
-        );
-
-        // $ids = $id;
-        // $soal = Soal::with('ujian')->where('ujian_id', $ids)->get();
-        // $jadwal_id = $request->jadwal_id;
-        // return view('soal.create', compact('soal', 'id', 'jadwal_id'));
-    }
 
     public function SoalForm(Request $request)
     {
         // dd($request->all());
         $id = $request->id;
         $form = $request->form;
+
+        $tingkatan_id = $request->tingkatan_id;
+        $mata_pelajaran = $request->mata_pelajaran_id;
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
         $soal = Soal::with('ujian')->where('ujian_id', $id)->get();
-        $jadwal_id = $request->jadwal_id;
-        // dd($jadwal_id);
-        return view('soal.createForm', compact('soal', 'id', 'jadwal_id', 'form'));
+
+        return view('soal.createForm', compact('soal', 'id', 'form', 'tingkatan_id', 'mata_pelajaran', 'jenjang_pendidikan_id'));
     }
 }

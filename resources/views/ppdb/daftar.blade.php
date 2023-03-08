@@ -9,7 +9,8 @@
         .hehe {
             display: none;
         }
-		        .haha {
+
+        .haha {
             display: none;
         }
     </style>
@@ -87,6 +88,24 @@
                                                         </option>
                                                         <option value="sma">SMP Islam AL-Azhar BSD</option>
                                                         <option value="non">Non AL-Azhar BSD</option>
+                                                    </select>
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-4">
+                                                <label for="">Jurusan</label>
+                                            </div>
+                                            <div class="col-1">
+                                                :
+                                            </div>
+                                            <div class="col-7">
+                                                <fieldset>
+                                                    <select class="form-control" name="jurusan">
+                                                        <option value="" selected disabled>---Pilih Jurusan---
+                                                        </option>
+                                                        <option value="ipa">IPA</option>
+                                                        <option value="ips">IPS</option>
                                                     </select>
                                                 </fieldset>
                                             </div>

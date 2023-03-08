@@ -1,5 +1,18 @@
 @extends('layouts.template.template')
 @section('content')
+    <style>
+        .tampil {
+            display: none;
+        }
+
+        .hehe {
+            display: none;
+        }
+
+        .haha {
+            display: none;
+        }
+    </style>
     <div class="main-content">
 
         <div class="modal fade" id="add_TU_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -15,9 +28,37 @@
                         @csrf
                         <div class="modal-body">
                             <div class="my-2">
-                                <label for="name">Nama Mata Pelajaran</label>
+                                <label for="name">Mata Pelajaran</label>
                                 <input type="text" name="name" class="form-control"
-                                    placeholder="Masukan Nama Mata Pelajaran" required>
+                                    placeholder="Masukan Mata Pelajaran" required>
+                            </div>
+                            <div class="my-2">
+                                <label for="">Tingkatan</label>
+                                <select name="tingkatan" id="isMember" class="form-control">
+                                    <option value="">---Pilih Tingkatan---</option>
+                                    @foreach ($tingkatan as $item)
+                                        @if ($item->tingkat > 9 && $item->tingkat < 13)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @elseif($item->tingkat != 13)
+                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="my-2 tampil" id="12">
+                                <label for="">Nama Jurusan</label>
+                                <input type="text" name="jurusan12" class="form-control"
+                                    placeholder="Masukan Nama Jurusan">
+                            </div>
+                            <div class="my-2 tampil" id="11">
+                                <label for="">Nama Jurusan</label>
+                                <input type="text" name="jurusan11" class="form-control"
+                                    placeholder="Masukan Nama Jurusan">
+                            </div>
+                            <div class="my-2 tampil" id="10">
+                                <label for="">Nama Jurusan</label>
+                                <input type="text" name="jurusan10" class="form-control"
+                                    placeholder="Masukan Nama Jurusan">
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -48,6 +89,15 @@
                                 <label for="name">Nama Mata Pelajaran</label>
                                 <input type="text" id="name" name="name" class="form-control"
                                     placeholder="Masukan Nama Mata Pelajaran" required>
+                            </div>
+                            <div class="my-2">
+                                <label for="name">Tingkatan</label>
+                                <input type="text" id="tingkatan" disabled class="form-control"
+                                    placeholder="Masukan Nama Mata Pelajaran" required>
+                            </div>
+                            <div class="my-2">
+                                <label for="name">Jurusan</label>
+                                <input type="text" id="jurusan" disabled class="form-control" placeholder="" required>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -96,18 +146,18 @@
                     </div>
                 </div>
             </div>
-
-
-
-
-
-
         </section>
     </div>
 @endsection
 
 @section('js')
     <script>
+        $(function() {
+            $('#isMember').change(function() {
+                $('.tampil').hide();
+                $('#' + $(this).val()).show();
+            });
+        });
         $(function() {
             // add new employee ajax request
             $("#add_TU_form").submit(function(e) {
@@ -134,6 +184,7 @@
                         $("#add_TU_btn").text('Save');
                         $("#add_TU_form")[0].reset();
                         $("#add_TU_modal").modal('hide');
+                        $('.tampil').hide();
                     }
                 });
             });
@@ -150,6 +201,12 @@
                     },
                     success: function(response) {
                         $("#name").val(response.name);
+                        $("#tingkatan").val(response.tingkatan);
+                        if (response.jurusan === null) {
+                            $("#jurusan").val('jurusan tidak ada');
+                        } else {
+                            $("#jurusan").val(response.jurusan);
+                        }
                         $("#id").val(response.id);
                     }
                 });

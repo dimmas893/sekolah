@@ -35,7 +35,7 @@
                                                         <div class="card">
                                                             <div
                                                                 class="card-header d-flex justify-content-between align-items-center">
-                                                                {{ $item->kelas->name }}
+                                                                {{ $item->kelas->name }} - {{ $item->jurusan }}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -57,7 +57,7 @@
                                                         <div class="card">
                                                             <div
                                                                 class="card-header d-flex justify-content-between align-items-center">
-                                                                {{ $item->kelas->name }}
+                                                                {{ $item->kelas->name }} - {{ $item->jurusan }}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -79,7 +79,7 @@
                                                         <div class="card">
                                                             <div
                                                                 class="card-header d-flex justify-content-between align-items-center">
-                                                                {{ $item->kelas->name }}
+                                                                {{ $item->kelas->name }} - {{ $item->jurusan }}
                                                             </div>
                                                         </div>
                                                     </div>
@@ -101,7 +101,7 @@
                                                         <div class="card">
                                                             <div
                                                                 class="card-header d-flex justify-content-between align-items-center">
-                                                                {{ $item->kelas->name }}
+                                                                {{ $item->kelas->name }} - {{ $item->jurusan }}
                                                             </div>
                                                         </div>
                                                     </div>

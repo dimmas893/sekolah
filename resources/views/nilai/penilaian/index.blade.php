@@ -1,16 +1,71 @@
  @extends('layouts.template.template')
  @section('content')
+     <form method="get" id="nilaitk_tk" action="{{ route('nilaitk') }}" style="display:none;">
+         @csrf
+         <input type="hidden" name="jenjang_pendidikan_id" value="4">
+         <input type="submit" class="btn btn-primary" value="Masuk">
+     </form>
+     <form method="get" id="nilaisd_sd" action="{{ route('nilaisd') }}" style="display:none;">
+         @csrf
+         <input type="hidden" name="jenjang_pendidikan_id" value="1">
+         <input type="submit" class="btn btn-primary" value="Masuk">
+     </form>
+     <form method="get" id="nilaismp_smp" action="{{ route('nilaismp') }}" style="display:none;">
+         @csrf
+         <input type="hidden" name="jenjang_pendidikan_id" value="2">
+         <input type="submit" class="btn btn-primary" value="Masuk">
+     </form>
+     <form method="get" id="nilaisma_sma" action="{{ route('nilaisma') }}" style="display:none;">
+         @csrf
+         <input type="hidden" name="jenjang_pendidikan_id" value="3">
+         <input type="submit" class="btn btn-primary" value="Masuk">
+     </form>
      <div class="main-content">
          <section class="section">
              <div class="section-header">
+                 {{ $jenjang_pendidikan_id }}
                  <h1>Penilaian {{ $jadwal->kelasget->kelas->name }} / {{ $jadwal->mata_pelajaran->name }}</h1>
                  @if ((int) Auth::user()->role === 1)
                      <div class="section-header-breadcrumb">
                          <div class="breadcrumb-item active"><a href="{{ route('menu') }}">Menu</a></div>
                          <div class="breadcrumb-item active"><a href="{{ route('manage') }}">Manage</a></div>
-                         <div class="breadcrumb-item active"><a href="{{ route('semuakelas') }}">Semua kelas</a></div>
-                         <div class="breadcrumb-item active"><a href="{{ route('nilaitk') }}">Nilai semua jenjang tk</a>
-                         </div>
+                         <div class="breadcrumb-item active"><a href="{{ route('manageNilai') }}">Semua kelas</a></div>
+                         @if ($jenjang_pendidikan_id == 1)
+                             <div class="breadcrumb-item active">
+                                 <a href="{{ route('nilaisd') }}"
+                                     onclick="event.preventDefault();
+                                    document.getElementById('nilaisd_sd').submit();">Nilai
+                                     semua jenjang
+                                     sd</a>
+                             </div>
+                         @endif
+                         @if ($jenjang_pendidikan_id == 2)
+                             <div class="breadcrumb-item active">
+                                 <a href="{{ route('nilaismp') }}"
+                                     onclick="event.preventDefault();
+                                    document.getElementById('nilaismp_smp').submit();">Nilai
+                                     semua jenjang
+                                     tk</a>
+                             </div>
+                         @endif
+                         @if ($jenjang_pendidikan_id === 3)
+                             <div class="breadcrumb-item active">
+                                 <a href="{{ route('nilaisma') }}"
+                                     onclick="event.preventDefault();
+                                    document.getElementById('nilaisma_sma').submit();">Nilai
+                                     semua jenjang
+                                     sma</a>
+                             </div>
+                         @endif
+                         @if ($jenjang_pendidikan_id == 4)
+                             <div class="breadcrumb-item active">
+                                 <a href="{{ route('nilaitk') }}"
+                                     onclick="event.preventDefault();
+                                    document.getElementById('nilaitk_tk').submit();">Nilai
+                                     semua jenjang
+                                     tk</a>
+                             </div>
+                         @endif
                          <div class="breadcrumb-item">Daftar nilai kelas
                              {{ $jadwal->kelasget->kelas->name }}
                          </div>
@@ -90,18 +145,18 @@
                                                      <td>
                                                          @if ($item['avatar'] != null)
                                                              <img alt="image" src="{{ $item['avatar'] }}"
-                                                                 class="rounded-circle" width="35" data-toggle="tooltip"
-                                                                 title="Foto Siswa">
+                                                                 class="rounded-circle" width="35"
+                                                                 data-toggle="tooltip" title="Foto Siswa">
                                                          @else
                                                              <img alt="image" src="/assets/img/avatar/avatar-5.png"
-                                                                 class="rounded-circle" width="35" data-toggle="tooltip"
-                                                                 title="Foto Siswa">
+                                                                 class="rounded-circle" width="35"
+                                                                 data-toggle="tooltip" title="Foto Siswa">
                                                          @endif
                                                      </td>
                                                      <td>{{ $item['nama_siswa'] }}</td>
                                                      <td class="p-0 text-center">
-                                                         <input type="text" name="nilai_kehadiran[]" class="form-control"
-                                                             value="{{ $item['nilai_kehadiran'] }}">
+                                                         <input type="text" name="nilai_kehadiran[]"
+                                                             class="form-control" value="{{ $item['nilai_kehadiran'] }}">
                                                      </td>
                                                      <td>
                                                          <input type="text" name="nilai_sikap[]" class="form-control"
@@ -129,7 +184,8 @@
                                                      </td>
                                                      <td>
                                                          @if ($item['predikat'] != null)
-                                                             <div class="badge badge-success">{{ $item['predikat'] }}</div>
+                                                             <div class="badge badge-success">{{ $item['predikat'] }}
+                                                             </div>
                                                          @else
                                                              -
                                                          @endif

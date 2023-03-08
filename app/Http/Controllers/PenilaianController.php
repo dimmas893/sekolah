@@ -17,6 +17,7 @@ class PenilaianController extends Controller
     public function penilaian(Request $request)
     {
         // dd($request->all());
+        $jenjang_pendidikan_id = (int)$request->jenjang_pendidikan_id;
         $setting = Setting::first();
         $file_path = 'https://dapurkoding.my.id/';
         if ($request->jadwal_id) {
@@ -96,7 +97,7 @@ class PenilaianController extends Controller
             }
         }
         if ($jadwal) {
-            return view('nilai.penilaian.index', compact('setting', 'jadwal', 'count', 'arrayNilaiSiswa', 'cek'));
+            return view('nilai.penilaian.index', compact('setting', 'jadwal', 'count', 'arrayNilaiSiswa', 'cek', 'jenjang_pendidikan_id'));
         } else {
             return view('nilai.penilaian.index', compact('setting', 'arrayNilaiSiswa', 'cek'));
         }
@@ -132,40 +133,45 @@ class PenilaianController extends Controller
         $tahun = $setting->id_tahun_ajaran;
         // $tk = Kelas::with('kelas')->whereIn('tingkatan_id', [14])->get();
 
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
         $mata_pelajaran = Jadwal::where('jenjang_pendidikan_id', 4)->whereHas('kelasget', function ($q) use ($tahun) {
             $q->where('id_tahun_ajaran', $tahun);
         })->select('mata_pelajaran_id')->groupBy('mata_pelajaran_id')->get();
         $tingkatan = 14;
-        return view('admin.nilai.nilaitk', compact('mata_pelajaran', 'tahun', 'tingkatan'));
+        return view('admin.nilai.nilaitk', compact('mata_pelajaran', 'tahun', 'tingkatan', 'jenjang_pendidikan_id'));
     }
     public function nilaisd(Request $request)
     {
         $setting = Setting::first();
         $tahun = $setting->id_tahun_ajaran;
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
         // $tk = Kelas::with('kelas')->whereIn('tingkatan_id', [14])->get();
 
         $mata_pelajaran = Jadwal::where('jenjang_pendidikan_id', 1)->whereHas('kelasget', function ($q) use ($tahun) {
             $q->where('id_tahun_ajaran', $tahun);
         })->select('mata_pelajaran_id')->groupBy('mata_pelajaran_id')->get();
         $tingkatan = 14;
-        return view('admin.nilai.nilaisd', compact('mata_pelajaran', 'tahun', 'tingkatan'));
+        return view('admin.nilai.nilaisd', compact('mata_pelajaran', 'tahun', 'tingkatan', 'jenjang_pendidikan_id'));
     }
     public function nilaismp(Request $request)
     {
+        // dd($request->all());
         $setting = Setting::first();
         $tahun = $setting->id_tahun_ajaran;
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
         // $tk = Kelas::with('kelas')->whereIn('tingkatan_id', [14])->get();
 
         $mata_pelajaran = Jadwal::where('jenjang_pendidikan_id', 2)->whereHas('kelasget', function ($q) use ($tahun) {
             $q->where('id_tahun_ajaran', $tahun);
         })->select('mata_pelajaran_id')->groupBy('mata_pelajaran_id')->get();
         $tingkatan = 14;
-        return view('admin.nilai.nilaismp', compact('mata_pelajaran', 'tahun', 'tingkatan'));
+        return view('admin.nilai.nilaismp', compact('mata_pelajaran', 'tahun', 'tingkatan', 'jenjang_pendidikan_id'));
     }
     public function nilaisma(Request $request)
     {
         $setting = Setting::first();
         $tahun = $setting->id_tahun_ajaran;
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
         // $tk = Kelas::with('kelas')->whereIn('tingkatan_id', [14])->get();
 
         $mata_pelajaran = Jadwal::where('jenjang_pendidikan_id', 3)->whereHas('kelasget', function ($q) use ($tahun) {
@@ -173,7 +179,7 @@ class PenilaianController extends Controller
         })->select('mata_pelajaran_id')->groupBy('mata_pelajaran_id')->get();
         // $tingkatan = 14;
         // dd($mata_pelajaran);
-        return view('admin.nilai.nilaisma', compact('mata_pelajaran', 'tahun'));
+        return view('admin.nilai.nilaisma', compact('mata_pelajaran', 'tahun', 'jenjang_pendidikan_id'));
     }
     public function nilaitkajax(Request $request)
     {

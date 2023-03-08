@@ -41,4 +41,8 @@ class Kelas extends Model
     {
         return $this->hasMany(Invoice_Tagihan::class, 'kelas_id', 'id');
     }
+    public function tingkatan()
+    {
+        return $this->belongsTo(Tingkatan::class, 'tingkatan_id', 'id');
+    }
 }

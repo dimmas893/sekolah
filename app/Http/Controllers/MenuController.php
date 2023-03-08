@@ -343,7 +343,6 @@ class MenuController extends Controller
         $guru = Jadwal::where('jenjang_pendidikan_id', $jenjang_pendidikan_id)->where('mata_pelajaran_id', $mata_pelajaran_id)->whereHas('kelasget', function ($q) use ($tahun) {
             $q->where('id_tahun_ajaran', $tahun);
         })->select('guru_id')->groupBy('guru_id')->get();
-        // dd($request->all());
         return view('menu.admin.manage.tugas.guru', compact('guru', 'tahun', 'jenjang_pendidikan_id', 'mata_pelajaran_id'));
     }
 
@@ -357,19 +356,19 @@ class MenuController extends Controller
         $guru_id = (int)$request->guru_id;
         $jadwal = Jadwal::where('jenjang_pendidikan_id', $jenjang_pendidikan_id)->where('guru_id', $guru_id)->where('mata_pelajaran_id', $mata_pelajaran_id)->whereHas('kelasget', function ($q) use ($tahun) {
             $q->where('id_tahun_ajaran', $tahun);
-        })->select('id')->groupBy('id')->get();
+        })->select('kelas_id')->groupBy('kelas_id')->get();
         return view('menu.admin.manage.tugas.jadwal', compact('jadwal', 'tahun', 'jenjang_pendidikan_id', 'mata_pelajaran_id', 'guru_id'));
     }
 
     public function manageTugasMataPelajarangurujadwalbuattugas(Request $request)
     {
-        // dd($request->all());
         $tahun = Setting::first()->id_tahun_ajaran;
-        $jadwal_id = (int)$request->jadwal_id;
-        $jadwal = Jadwal::where('id', $jadwal_id)->whereHas('kelasget', function ($q) use ($tahun) {
-            $q->where('id_tahun_ajaran', $tahun);
+        // $jadwal_id = (int)$request->jadwal_id;
+        $kelasku = (int)$request->kelas_id;
+        $jadwal = Jadwal::where('mata_pelajaran_id', $request->mata_pelajaran_id)->where('jenjang_pendidikan_id', $request->jenjang_pendidikan_id)->where('guru_id', $request->guru_id)->whereHas('kelasget', function ($q) use ($tahun, $kelasku) {
+            $q->where('id_tahun_ajaran', $tahun)->where('kelas_id', $kelasku);
         })->first();
-
+        // dd($jadwal);
         return view('menu.admin.manage.tugas.buat', compact('jadwal'));
     }
 

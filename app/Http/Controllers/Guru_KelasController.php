@@ -26,23 +26,44 @@ class Guru_KelasController extends Controller
 
     public function ajax(Request $request)
     {
-        $setting = Setting::first();
-        $id = $request->id;
+        $setting = Setting::first()->id_tahun_ajaran;
+        $id = (int)$request->id;
         $emps = Master_Kelas::where('jenjang_pendidikan_id', $id)->get();
+        // $emps = Kelas::whereHas('kelas', function ($q) use ($id) {
+        //     $q->where('jenjang_pendidikan_id', $id);
+        // })->get();
 
         $output = '';
-        if ($emps->count() > 0) {
-            $output .= '<label>Kelas</label>
+        if ($id === 3) {
+            if ($emps->count() > 0) {
+                $output .= '<label>Kelas</label>
             <select name="id_master_kelas" class="form-control">
 						<option value="" selected disabled>---Pilih Kelas---</option>
 			';
-            foreach ($emps as $emp) {
-                $output .= '<option value="' . $emp->id . '" >' . $emp->name . '</option>';
+                foreach ($emps as $emp) {
+                    $output .= '<option value="' . $emp->id . '" >' . $emp->name . '</option>';
+                }
+                $output .= '</select>';
+                $output .= '<label>Jurusan</label>';
+                $output .= '<input type="text" name="jurusan" class="form-control" placeholder="Masukan jurusan" required/>';
+                echo $output;
+            } else {
+                echo '<h1 class="text-center text-secondary my-5">Kelas Sudah terisi!</h1>';
             }
-            $output .= '</select>';
-            echo $output;
         } else {
-            echo '<h1 class="text-center text-secondary my-5">Kelas Sudah terisi!</h1>';
+            if ($emps->count() > 0) {
+                $output .= '<label>Kelas</label>
+            <select name="id_master_kelas" class="form-control">
+						<option value="" selected disabled>---Pilih Kelas---</option>
+			';
+                foreach ($emps as $emp) {
+                    $output .= '<option value="' . $emp->id . '" >' . $emp->name . '</option>';
+                }
+                $output .= '</select>';
+                echo $output;
+            } else {
+                echo '<h1 class="text-center text-secondary my-5">Kelas Sudah terisi!</h1>';
+            }
         }
     }
 
@@ -94,12 +115,27 @@ class Guru_KelasController extends Controller
         $idmasterkelas = (int)$request->id_master_kelas;
         $masterkelas = Master_Kelas::where('id', $idmasterkelas)->first();
         // dd($request->all());
-        $empData = [
-            'id_guru' => $request->id_guru,
-            'tingkatan_id' => $masterkelas->tingkatan_id,
-            'id_tahun_ajaran' => $request->id_tahun_ajaran,
-            'id_master_kelas' => $request->id_master_kelas,
-        ];
+
+        if ($request->jurusan != null) {
+            $empData = [
+                'id_guru' => $request->id_guru,
+                'tingkatan_id' => $masterkelas->tingkatan_id,
+                'id_tahun_ajaran' => $request->id_tahun_ajaran,
+                'id_master_kelas' => $request->id_master_kelas,
+                'jurusan' => $request->jurusan,
+            ];
+        }
+
+        if ($request->jurusan === null) {
+            $empData = [
+                'id_guru' => $request->id_guru,
+                'tingkatan_id' => $masterkelas->tingkatan_id,
+                'id_tahun_ajaran' => $request->id_tahun_ajaran,
+                'id_master_kelas' => $request->id_master_kelas,
+                'jurusan' => null,
+            ];
+        }
+
         Kelas::create($empData);
         return response()->json([
             'status' => 200,

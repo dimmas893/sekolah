@@ -36,7 +36,9 @@
                                     <select name="mata_pelajaran_id" class="form-control">
                                         <option value="null">--- Pilih Mata Pelajaran ---</option>
                                         @foreach ($mata_pelajaran as $item)
-                                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @if ($item->jenjang_pendidikan_id === (int) $jenjang_pendidikan_id && $kelas->jurusan === $item->jurusan)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>

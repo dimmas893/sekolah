@@ -63,7 +63,9 @@
                                                 <form action="{{ route('penilaian') }}" method="get">
                                                     <input type="hidden" name="cek" value="1">
                                                     <input type="hidden" name="kelas_id" value="{{ $kel->kelas_id }}">
-                                                    <input type="hidden" name="guru_id" value="{{ $gur->guru_id }}">
+                                                    <input type="hidden" name="guru_id" value="{{ $gur->guru_id }}"> <input
+                                                        type="hidden" name="jenjang_pendidikan_id"
+                                                        value="{{ $jenjang_pendidikan_id }}">
                                                     <input type="hidden" name="mata_pelajaran_id"
                                                         value="{{ $item->mata_pelajaran_id }}">
                                                     <input type="submit" class="btn btn-info" value="masuk">

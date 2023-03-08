@@ -85,14 +85,28 @@ class SoalController extends Controller
                 $ujian = Ujian::where('id', $id)->first();
                 $soal = Soal::with('ujian')->where('ujian_id', $ujian->id)->get();
                 $jadwal_id = $ujian->jadwal_id;
-                return view('soal.create', compact('soal', 'id', 'jadwal_id'));
+
+                $tingkatan_id = $request->tingkatan;
+                $mata_pelajaran = $request->mata_pelajaran_id;
+                $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
+                return view('soal.create', compact(
+                    'soal',
+                    'id',
+                    'tingkatan_id',
+                    'mata_pelajaran',
+                    'jenjang_pendidikan_id'
+                ));
             }
         }
         $ujian = Ujian::where('id', $request->ujian_id)->first();
         $id = $ujian->id;
         $soal = Soal::with('ujian')->where('ujian_id', $ujian->id)->get();
         $jadwal_id = $ujian->jadwal_id;
-        return view('soal.create', compact('soal', 'id', 'jadwal_id'));
+
+        $tingkatan_id = $request->tingkatan_id;
+        $mata_pelajaran = $request->mata_pelajaran_id;
+        $jenjang_pendidikan_id = $request->jenjang_pendidikan_id;
+        return view('soal.create', compact('soal', 'id', 'tingkatan_id', 'mata_pelajaran', 'jenjang_pendidikan_id'));
     }
 
     public function storemulti(Request $request)

@@ -24,7 +24,7 @@
                                         <option value="">Pilih Semua</option>
                                         @foreach ($sma as $value)
                                             <option value="{{ $value->id }}">
-                                                {{ \App\Models\Master_Kelas::where('id', $value->id_master_kelas)->first()->name }}
+                                                {{ $value->kelas->name }} - {{ $value->jurusan }}
                                             </option>
                                         @endforeach
                                     </select>

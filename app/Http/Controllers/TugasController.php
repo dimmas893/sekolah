@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guru;
 use App\Models\Jadwal;
 use App\Models\Kelas;
 use App\Models\KelasGuru;
 use App\Models\Kumpul_Tugas;
 use App\Models\Rincian_Siswa;
+use App\Models\Setting;
 use App\Models\Siswa;
 use App\Models\Tugas;
 use Illuminate\Http\Request;
@@ -114,9 +116,45 @@ class TugasController extends Controller
         ]);
     }
 
+    public function pilihmatapelajaran()
+    {
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $guru = Guru::where('id_user', Auth::user()->id)->first();
+        $mataPelajaran = Jadwal::where('guru_id', $guru->id)->whereHas('kelasget', function ($q) use ($tahun) {
+            $q->where('id_tahun_ajaran', $tahun);
+        })->select('mata_pelajaran_id')->groupBy('mata_pelajaran_id')->get();
+        return view('tugas.guru.index', compact('mataPelajaran'));
+    }
+
+    public function pilihtingkatan(Request $request)
+    {
+        // dd($request->all());
+        $mataPelajaran = (int)$request->mata_pelajaran_id;
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $guru = Guru::where('id_user', Auth::user()->id)->first();
+        $tingkatan = Jadwal::where('guru_id', $guru->id)->where('mata_pelajaran_id', $mataPelajaran)->whereHas('kelasget', function ($q) use ($tahun) {
+            $q->where('id_tahun_ajaran', $tahun);
+        })->select('kelas_id', 'jenjang_pendidikan_id')->groupBy('kelas_id', 'jenjang_pendidikan_id')->get();
+        return view('tugas.guru.tingkatan', compact('tingkatan', 'mataPelajaran', 'guru'));
+    }
+
+    public function pilihkelastugas(Request $request)
+    {
+        // dd($request->all());
+        $mataPelajaran = (int)$request->mata_pelajaran_id;
+        $tingkatan = (int)$request->tingkatan_id;
+        $tahun = Setting::first()->id_tahun_ajaran;
+        $guru = Guru::where('id_user', Auth::user()->id)->first();
+        $kelas = Jadwal::where('guru_id', $guru->id)->where('mata_pelajaran_id', $mataPelajaran)->where('tingkatan_id', $tingkatan)->whereHas('kelasget', function ($q) use ($tahun) {
+            $q->where('id_tahun_ajaran', $tahun);
+        })->select('kelas_id')->groupBy('kelas_id')->get();
+        return view('tugas.guru.kelas', compact('kelas', 'mataPelajaran', 'tingkatan'));
+    }
+
     // handle insert a new Tu ajax request
     public function store_biasa(Request $request)
     {
+        // dd($request->all());
         if ($request->hasFile('file_tugas')) {
             $file = $request->file('file_tugas');
             $file_extension = $file->getClientOriginalExtension();
@@ -129,26 +167,36 @@ class TugasController extends Controller
             $file_tugas = null;
         }
 
+        $tahun = Setting::first()->id_tahun_ajaran;
+        // $jadwal_id = (int)$request->jadwal_id;
+        $kelasku = (int)$request->kelas_id;
+        $jadwal = Jadwal::where('mata_pelajaran_id', $request->mata_pelajaran_id)->where('jenjang_pendidikan_id', $request->jenjang_pendidikan_id)->where('guru_id', $request->guru_id)->whereHas('kelasget', function ($q) use ($tahun, $kelasku) {
+            $q->where('id_tahun_ajaran', $tahun)->where('kelas_id', $kelasku);
+        })->first();
+        // dd($jadwal);
         $empData = [
-            'jadwal_id' => $request->jadwal_id,
+            'mata_pelajaran_id' => $jadwal->mata_pelajaran_id,
+            'kelas_id' => $jadwal->kelas_id,
+            'guru_id' => $jadwal->guru_id,
+            'jenjang_pendidikan_id' => $jadwal->jenjang_pendidikan_id,
             'nama' => $request->nama,
             'tanggal_tugas' => $request->tanggal_tugas,
             'tanggal_pengumpulan' => $request->tanggal_pengumpulan,
             'tanggal_evaluasi' => $request->tanggal_evaluasi,
-            'evaluasi_oleh' => 14,
+            'evaluasi_oleh' => null,
             'deskripsi' => $request->deskripsi,
             'status_aktif' => 0,
-            'dibuat_oleh' => 14,
+            'dibuat_oleh' => $jadwal->guru_id,
             'file_tugas' => $file_tugas
         ];
 
         $tugas = Tugas::create($empData);
-        $datajadwal = Jadwal::where('id', $tugas->jadwal_id)->first();
-        $datasiswa = Kelas::where('id', $datajadwal->kelas_id)->first();
+        // $datajadwal = Jadwal::where('id', $tugas->jadwal_id)->first();
+        // $datasiswa = Kelas::where('id', $jadwal->kelas_id)->first();
         // $rincian_siswa = Rincian_Siswa::where('jadwal_id', $tugas->jadwal_id)->get();
         $siswa = Siswa::where(
             'kelas',
-            $datasiswa->id
+            $jadwal->kelas_id
         )->get();
         foreach ($siswa as $p) {
             $kumpul_tugas = [

@@ -121,8 +121,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/soal_insert', [App\Http\Controllers\SoalController::class, 'insert'])->name('soal_insert');
 
     Route::post('/ujian/store', [App\Http\Controllers\UjianController::class, 'store'])->name('ujian-store');
-    Route::get('/tabel-ujian/{id}', [App\Http\Controllers\UjianController::class, 'tabelujian'])->name('tabelujian');
-    Route::get('/ujian/all/{id}', [App\Http\Controllers\UjianController::class, 'all'])->name('ujian-all');
+    Route::get('/tabel-ujian/{mata_pelajaran_id}/{tingkatan_id}/{jenjang_pendidikan_id}', [App\Http\Controllers\UjianController::class, 'tabelujian'])->name('tabelujian');
+    Route::get('/ujian/all/{mata_pelajaran_id}/{tingkatan_id}/{jenjang_pendidikan_id}', [App\Http\Controllers\UjianController::class, 'all'])->name('ujian-all');
     Route::get('/ujian/soal', [App\Http\Controllers\UjianController::class, 'SoalForm'])->name('SoalForm');
     Route::get('/ujian/soal/{id}', [App\Http\Controllers\UjianController::class, 'soal'])->name('ujian-soal');
     Route::get('/ujian/edit', [App\Http\Controllers\UjianController::class, 'edit'])->name('ujian-edit');
@@ -296,12 +296,19 @@ Route::middleware(['auth'])->group(function () {
     //siswa tagihan
     Route::get('/tagihan/siswa', [App\Http\Controllers\Tagihan_SiswaController::class, 'tagihan_siswa_web'])->name('tagihan_siswa_web');
     Route::post('/tagihan/siswa/total', [App\Http\Controllers\Tagihan_SiswaController::class, 'CekTotal'])->name('cektotal');
+    Route::post('/tagihan/siswa/totaladmin', [App\Http\Controllers\Tagihan_SiswaController::class, 'CekTotaladmin'])->name('cektotaladmin');
     Route::post('/tagihan/siswa/hapus', [App\Http\Controllers\Tagihan_SiswaController::class, 'hapus'])->name('hapus');
+    Route::post('/tagihan/siswa/hapus-admin', [App\Http\Controllers\Tagihan_SiswaController::class, 'hapusadmin'])->name('hapusadmin');
     Route::get('/tagihan/siswa/cek', [App\Http\Controllers\Tagihan_SiswaController::class, 'cek'])->name('cek');
+    Route::get('/tagihan/siswa/cek-admin', [App\Http\Controllers\Tagihan_SiswaController::class, 'cekadmin'])->name('cekadmin');
     // Route::get('/tagihan/siswa/CekTotalView', [App\Http\Controllers\Tagihan_SiswaController::class, 'CekTotalView'])->name('CekTotalView');
     Route::post('/tagihan/siswa/CekTotalViewDelete', [App\Http\Controllers\Tagihan_SiswaController::class, 'CekTotalViewDelete'])->name('CekTotalViewDelete');
+    Route::post('/tagihan/siswa/CekTotalViewDelete/admin', [App\Http\Controllers\Tagihan_SiswaController::class, 'CekTotalViewDeleteadmin'])->name('CekTotalViewDeleteadmin');
     Route::get('/tagihan/siswa/viewtampil', [App\Http\Controllers\Tagihan_SiswaController::class, 'viewtampil'])->name('viewtampil');
+    Route::get('/tagihan/siswa/viewtampil-ajax', [App\Http\Controllers\Tagihan_SiswaController::class, 'ajaxgettagihanview'])->name('ajaxgettagihanview');
     Route::get('/tagihan/Pembayaran', [App\Http\Controllers\Tagihan_SiswaController::class, 'pembayaran'])->name('simpanpembayaran');
+    Route::post('/tagihan/Pembayaran/admin', [App\Http\Controllers\Tagihan_SiswaController::class, 'pembayaranadmin'])->name('simpanpembayaranadmin');
+    Route::get('/tagihan/Pembayaran/admin-massal/{id}', [App\Http\Controllers\Tagihan_SiswaController::class, 'pembayaranadminmassal'])->name('simpanpembayaranadminmassal');
     Route::get('/infotagihan/{id}', [App\Http\Controllers\Tagihan_SiswaController::class, 'infotagihan']);
     Route::post('/siswa/tagihan/store', [App\Http\Controllers\Tagihan_SiswaController::class, 'store'])->name('siswa_tagihan-store');
     Route::get('/siswa/tagihan/all/{jenjang_id}', [App\Http\Controllers\Tagihan_SiswaController::class, 'all'])->name('siswa_tagihan-all');
@@ -428,11 +435,19 @@ Route::get('/ajax/kelas', [App\Http\Controllers\Guru_KelasController::class, 'aj
 
 Route::get('/menu/tagihan', [App\Http\Controllers\MenuController::class, 'viewTagihanmenu'])->name('viewTagihanmenu');
 Route::get('/menu/tagihan/siswa', [App\Http\Controllers\MenuController::class, 'viewTagihansiswa'])->name('viewTagihansiswa');
-
+//ajax buat tagihan siswa
+Route::get('/siswa/tagihan-search', [App\Http\Controllers\Tagihan_SiswaController::class, 'ajax'])->name('ajaxsearch-tagihansiswa');
+Route::get('/siswa/tagihan-search-siswa', [App\Http\Controllers\Tagihan_SiswaController::class, 'ajaxgetsiswa'])->name('ajaxsearch-tagihansiswanamasiswa');
+Route::get('/siswa/tagihan-search-siswa-get', [App\Http\Controllers\Tagihan_SiswaController::class, 'ajaxgettagihan'])->name('ajaxsearch-tagihanAll');
 //tagihan
 Route::get('/siswa/tagihan', [App\Http\Controllers\Tagihan_SiswaController::class, 'index'])->name('siswa_tagihan');
 Route::get('/siswa/tagihan/pilih-jenjang', [App\Http\Controllers\Tagihan_SiswaController::class, 'PilihJenjang'])->name('siswa_tagihan_pilih_jenjang');
 Route::get('/siswa/tagihan/create', [App\Http\Controllers\Tagihan_SiswaController::class, 'create'])->name('siswa_tagihan_create');
+
+//bayar tagihan
+Route::get('/siswa/pilihan-search-bayar-tagihan', [App\Http\Controllers\Tagihan_SiswaController::class, 'search'])->name('searchbayartagihan');
+Route::get('/siswa/bayar-tagihan/id-invoice', [App\Http\Controllers\Tagihan_SiswaController::class, 'bayartagihan'])->name('bayartagihan-id-invoice');
+Route::get('/siswa/bayar-tagihan/nama-siswa', [App\Http\Controllers\Tagihan_SiswaController::class, 'searchNamaSiswa'])->name('bayartagihan-nama-siswa');
 
 //belum-bayar tagihan
 Route::get('/menu/tagihan/siswa/belumdibayar', [App\Http\Controllers\MenuController::class, 'viewTagihansiswabelumdibayar'])->name('viewTagihansiswabelumdibayar');
@@ -452,6 +467,22 @@ Route::get('/menu/penerimaan-siswa', [App\Http\Controllers\MenuController::class
 Route::get('/menu/kenaikan-kelas', [App\Http\Controllers\MenuController::class, 'menukenaikankelas'])->name('menukenaikankelas');
 Route::get('/menu/kenaikan-kelas-pilih', [App\Http\Controllers\MenuController::class, 'menukenaikankelaspilihkelas'])->name('menukenaikankelaspilihkelas');
 Route::get('/menu/kenaikan-akses', [App\Http\Controllers\MenuController::class, 'menukenaikankelaspilihkelasakses'])->name('menukenaikankelaspilihkelasakses');
+
+
+Route::get('/menu/jadwal/tugas', [App\Http\Controllers\jadwalController::class, 'menutugas'])->name('menutugas');
+Route::get('/menu/jadwal/absen-massal', [App\Http\Controllers\jadwalController::class, 'menuabsenmassal'])->name('menuabsenmassal');
+Route::get('/menu/jadwal/ubah-absen', [App\Http\Controllers\jadwalController::class, 'menuubahabsen'])->name('menuubahabsen');
+Route::get('/menu/jadwal/siswa', [App\Http\Controllers\jadwalController::class, 'menusiswa'])->name('menusiswa');
+
+Route::get('/menu/tugas/mata-pelajaran', [App\Http\Controllers\TugasController::class, 'pilihmatapelajaran'])->name('pilihmatapelajaran');
+Route::get('/menu/tugas/tingkatan', [App\Http\Controllers\TugasController::class, 'pilihtingkatan'])->name('pilihtingkatan');
+Route::get('/menu/tugas/kelas', [App\Http\Controllers\TugasController::class, 'pilihkelastugas'])->name('pilihkelastugas');
+
+
+Route::get('/menu/ujian/jenjang', [App\Http\Controllers\UjianController::class, 'pilihjenjangujian'])->name('pilihjenjangujian');
+Route::get('/menu/ujian/tingkatan', [App\Http\Controllers\UjianController::class, 'pilihtingkatanujian'])->name('pilihtingkatanujian');
+Route::get('/menu/ujian/mata-pelajaran', [App\Http\Controllers\UjianController::class, 'pilihmatapelajaranujian'])->name('pilihmatapelajaranujian');
+// Route::get('/menu/jadwal/ujian', [App\Http\Controllers\jadwalController::class, 'menuujian'])->name('menuujian');
 
 // Route::get('/guru/mapel', [App\Http\Controllers\GuruMapelController::class, 'mapel'])->name('gurumapel');
 

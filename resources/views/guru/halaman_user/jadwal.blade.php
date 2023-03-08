@@ -13,17 +13,16 @@
         <div class="row">
             <div class="col-12">
                 @foreach ($mata_pelajaran as $pu)
-                    <div class="card">
-                        <div class="card-header bg-secondary d-flex justify-content-between align-items-center">
+                    <div class="card card-primary shadow-primary">
+                        <div class="card-header d-flex justify-content-between align-items-center">
                             <h4>{{ $pu->name }}</h4>
-
                             {{-- <a href="" class="btn btn-primary">Nilai</a> --}}
                         </div>
                         <div class="card-body">
                             <div class="row">
                                 @foreach ($jadwal->where('mata_pelajaran_id', $pu->id) as $kel)
                                     <div class="col-md-12 col-lg-12 col-xl-3 col-xxl-12 col-sm-12">
-                                        <div class="card card-primary">
+                                        <div class="card card-success shadow-success">
                                             <div class="card-header d-flex justify-content-between align-items-center">
                                                 <h4>{{ $kel->kelasget->kelas->name }} /
                                                     {{ $kel->ruangan->name }} -

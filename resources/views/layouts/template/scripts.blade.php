@@ -1,8 +1,9 @@
   <!-- General JS Scripts -->
-  {{-- <script src="{{ asset('assets/modules/jquery.min.js"></script> --}}
-  {{-- <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script> --}}
+  {{-- <script src="{{ asset('assets/modules/jquery.min.js') }}"></script> --}}
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js'></script>
+  @yield('js')
 
-  <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+  {{-- <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script> --}}
   <script src="{{ asset('assets/modules/popper.js') }}"></script>
   <script src="{{ asset('assets/modules/tooltip.js') }}"></script>
   <script src="{{ asset('assets/modules/bootstrap/js/bootstrap.min.js') }}"></script>
@@ -22,14 +23,12 @@
   </script>
   <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.4.0/js/responsive.bootstrap4.min.js">
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script src="{{ asset('/dist/vendor/chart.js/Chart.min.js') }}"></script>
   <script type="text/javascript" src="/js/jquery.toast.js"></script>
   {{-- <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
 
-  @yield('js')
 
   <!-- JS Libraies -->
 
@@ -47,6 +46,26 @@
               'Ada Sesuatu Yang Salah',
               'Anda Belum Memilih Jenjang!',
               'error'
+          )
+      </script>
+  @endif
+
+  @if (session('pembayaranberhasiladmin'))
+      <script type="text/javascript">
+          Swal.fire(
+              'Selamat',
+              'Pembayaran Berhasil!',
+              'success'
+          )
+      </script>
+  @endif
+
+  @if (session('pembayarangagaladmin'))
+      <script type="text/javascript">
+          Swal.fire(
+              'Info',
+              'Tagihan sudah di bayar sebelumnya!',
+              'info'
           )
       </script>
   @endif

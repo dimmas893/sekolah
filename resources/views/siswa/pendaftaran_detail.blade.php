@@ -93,14 +93,22 @@
                                         </div>
                                     </div>
                                     <div class="card-footer text-right">
-                                        @csrf
-
                                         <input type="hidden" name="id" value="{{ $pendaftaran->id }}">
-
                                         <div class="mb-2">
                                             <select name="cekstatus" class="form-control">
                                                 <option value="LULUS">LULUS</option>
                                                 <option value="tidaklulus">Tidak Lulus</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-2">
+                                            <select name="jurusan" class="form-control">
+                                                @if ($pendaftaran->jurusan === 'ipa')
+                                                    <option value="ipa" selected>IPA</option>
+                                                    <option value="ips">IPS</option>
+                                                @elseif($pendaftaran->jurusan === 'ips')
+                                                    <option value="ips" selected>IPS</option>
+                                                    <option value="ipa">IPA</option>
+                                                @endif
                                             </select>
                                         </div>
                                         <input type="submit" value="submit" class="btn btn-primary">
